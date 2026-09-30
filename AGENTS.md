@@ -10,22 +10,24 @@ The agreed narrative is: what sequence search adds to gene-count analysis; a sho
 
 ## Current state
 
-- `slides.qmd`: first content draft, 26 slides including title and references.
+- `slides.qmd`: 26 slides including title and references.
 - `styles.css`: slide styling and simple diagrams.
 - `slides.html` and `slides_files/`: Quarto render output. `quarto render slides.qmd` succeeds.
+- `figs/`: cropped, presentation-sized panels from paper Figs. 3–5. Result slides now show Fig. 3b–d, Fig. 4a–c and selected Fig. 5 panels with on-slide citations.
 - Three demonstration slides describe planned workflows. They contain no tested Malva output. The client is not configured on this machine.
-- The generated HTML has been checked for slide structure. Visual inspection of the local HTML was blocked by the browser's local-file policy, so layout still needs review in an allowed viewer.
+- The figure slides and their neighbouring setup slides were inspected at 1600 × 900 through a local web server after rendering.
 
-## Next step: insert figures
+## Next step: verify the demonstrations
 
-Add selected, legible paper figure panels to the result slides before expanding the demonstrations. Suggested mapping:
+Select exact probes and datasets, obtain Malva API access or a local index, and run each planned demonstration. Save enough information to reproduce every result:
 
-1. Germline screening: Fig. 3b, on “Germline screening · result and boundary”.
-2. Isoform usage: Fig. 3c for *Ptprc* and Fig. 3d for *Add2*.
-3. Cancer mutations: Fig. 4a–c, focusing on the result and feature-context comparison.
-4. Cell-by-sequence analysis: Fig. 5a–c for representation and clustering; Fig. 5e–h for cluster-specific marker sequences.
+1. Query or probe sequence.
+2. Dataset, sample and cell filters.
+3. Malva client and index versions.
+4. Thresholds, normalisation and denominator.
+5. Saved output and the command or notebook that produced it.
 
-Use only panels that remain readable at presentation size. Put figure files in `figs/`; cite the paper and panel on each slide. If redrawing or simplifying a panel, label it as adapted and preserve axes, units, groups and statistical meaning. Replace redundant dot points where a figure communicates the result. Render and inspect each changed slide and its neighbours at the intended 16:9 size.
+Replace each amber “Pending” note only after the corresponding workflow has run successfully. Distinguish a tested result from an illustrative workflow, and keep the RNA-observability caveats already present in the deck.
 
 ## Slide conventions
 
@@ -38,4 +40,4 @@ Use only panels that remain readable at presentation size. Put figure files in `
 
 ## Later work
 
-After figure insertion: select exact probes and datasets; obtain Malva API access or a local index; run and save each demo with its query, filters, sample, index version and denominator; insert verified outputs; rehearse timing and perform full visual QA.
+After demonstration verification: insert the saved outputs, rehearse timing and perform a full-deck visual review.

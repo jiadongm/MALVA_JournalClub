@@ -122,13 +122,12 @@ execute:
 
 ## Germline screening · result and boundary
 
-- Observed allele frequencies tracked population expectations
-- Similar pattern in healthy and disease samples
-- Useful test of sequence retrieval across heterogeneous data
+<div class="figure-split germline">
+<figure class="paper-figure"><img src="figs/fig3b.png" alt="Observed alternative allele frequencies in healthy and disease samples track population frequencies; altered-sequence controls do not."></figure>
+<div class="figure-notes"><div class="takeaway">Observed allele frequencies tracked population expectations in healthy and disease samples.</div><p>The altered-sequence controls stayed near the background rate.</p><div class="boundary-note">A positive allele probe gives RNA sequence evidence. It does not resolve the donor genotype without coverage and allele-expression checks.</div></div>
+</div>
 
-<div class="aside">Interpretation: positive allele probe ≠ resolved donor genotype · consider coverage and allele expression</div>
-
-<div class="source">Paper, Fig. 3b and Extended Data Fig. 7e</div>
+<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 3b</div>
 
 ## 2 · Isoform usage
 
@@ -146,23 +145,21 @@ execute:
 
 ## Example · <i>Ptprc</i> exon A
 
-- Full-length Tabula Muris data
-- Exon A inclusion: stronger in B cells
-- Exon A exclusion: other immune-cell populations
-- Gene total alone conceals this contrast
+<div class="figure-split wide-figure">
+<figure class="paper-figure"><img src="figs/fig3c.png" alt="Coverage-like query across the Ptprc locus in Tabula Muris cell types."></figure>
+<div class="figure-notes"><div class="takeaway">B cells show stronger inclusion of exon A than the other immune populations.</div><p>Gene totals conceal this exon-level contrast.</p><div class="boundary-note">Coverage supports exon usage. Full-length isoform assignment needs evidence across the transcript.</div></div>
+</div>
 
-<div class="aside">Exon usage from coverage · full-length isoform assignment needs evidence across the transcript</div>
-
-<div class="source">Paper, Fig. 3c and “Quantifying isoform usage without mapping”</div>
+<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 3c</div>
 
 ## Example · <i>Add2</i> 3′ UTR
 
-- Proximal and distal polyadenylation sites
-- Distal signal: developing neural tissue
-- Proximal signal: developing liver
-- Spatial context helps explain bulk changes
+<div class="figure-split add2">
+<figure class="paper-figure"><img src="figs/fig3d.png" alt="Add2 3-prime UTR coverage through mouse development and spatial maps of short and long forms."></figure>
+<div class="figure-notes"><div class="takeaway">The distal 3′ UTR signal localises to developing neural tissue; the proximal form accumulates in liver.</div><p>Spatial context explains the apparent developmental shift in bulk profiles.</p></div>
+</div>
 
-<div class="source">Paper, Fig. 3d</div>
+<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 3d</div>
 
 ## 3 · Cancer somatic mutations
 
@@ -176,57 +173,46 @@ execute:
 
 ## Somatic mutations · what was shown
 
-- Reported high sensitivity and specificity across cancer types
-- Mean sensitivity across cancer types: about 0.94
-- 3′ UTR variants: strongest sensitivity among tested contexts
-- Splice-proximal variants: more difficult
+<figure class="paper-figure full-width">
+  <img src="figs/fig4.png" alt="Pan-cancer mutation detection specificity and sensitivity, detection by mutation frequency, and sensitivity by mutation type.">
+</figure>
 
-<div class="aside">Benchmark: retrieval of supplied mutations · clone inference: multiple informative loci and independent checks</div>
+<div class="result-line"><b>Across cancer types:</b> high specificity and mean sensitivity around 0.94. Splice-proximal variants were harder to recover.</div>
 
-<div class="source">Paper, Fig. 4a–c</div>
+<div class="boundary-note compact-note">This benchmark tests retrieval of supplied mutations. Clone inference needs multiple informative loci and independent checks.</div>
+
+<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 4a–c</div>
 
 ## 4 · From sequence search to cell comparison
 
-<div class="flow compact">
-  <div class="flowbox"><b>Cell × k-mer</b><small>billions of possible features</small></div>
-  <div class="arrow">→</div>
-  <div class="flowbox"><b>Cell × bucket</b><small>related k-mers grouped</small></div>
-  <div class="arrow">→</div>
-  <div class="flowbox"><b>Cell embedding</b><small>neighbours and clusters</small></div>
+<div class="figure-split representation">
+<figure class="paper-figure"><img src="figs/fig5a.png" alt="Sequenced cells represented as either cell-by-gene counts or cell-by-sequence features before dimensionality reduction."></figure>
+<div class="figure-notes"><div class="takeaway">The same reads can support a gene-count representation or a sequence-derived representation.</div><p>Malva groups related k-mers into buckets, then builds an embedding for neighbours and clusters.</p></div>
 </div>
 
-- Bucket: a compact sequence-derived feature
-- Compare its cell structure with a gene-count analysis
-
-<div class="source">Paper, Fig. 5a–c and Methods: bucketing approach</div>
+<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 5a; Methods: bucketing approach</div>
 
 ## Cell clustering from sequence composition
 
-- Across samples: variable agreement with gene-based clustering
-- Shared structure: familiar cell populations
-- Distinct structure: candidate sequence-specific signal
-- Lower agreement for single-nucleus data
+<div class="figure-grid clustering">
+<figure class="paper-figure"><img src="figs/fig5b.png" alt="Agreement between gene-count and sequence-based latent spaces across human tissues."><figcaption>Agreement varies by tissue and assay</figcaption></figure>
+<figure class="paper-figure"><img src="figs/fig5c.png" alt="Examples of low and high concordance between gene-based cell types and sequence-based clusters."><figcaption>Low and high clustering concordance</figcaption></figure>
+</div>
 
-<div class="aside">Interpret divergent clusters with biological evidence; disagreement alone is insufficient</div>
+<div class="boundary-note compact-note">Shared structure recovers familiar populations. Divergent clusters need biological evidence before interpretation.</div>
 
-<div class="source">Paper, Fig. 5b–e and Extended Data Fig. 10</div>
+<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 5b–c and Extended Data Fig. 10</div>
 
 ## From a cluster to a marker sequence
 
-<div class="flow compact">
-  <div class="flowbox"><b>Cluster-specific buckets</b></div>
-  <div class="arrow">→</div>
-  <div class="flowbox"><b>Retrieve k-mers</b></div>
-  <div class="arrow">→</div>
-  <div class="flowbox"><b>Assemble contigs</b></div>
-  <div class="arrow">→</div>
-  <div class="flowbox"><b>Annotate and map</b></div>
+<div class="figure-grid markers">
+<figure class="paper-figure"><img src="figs/fig5e.png" alt="Gene-based and sequence-based spatial clusters in a head and neck tumour section."><figcaption>Sequence-derived clusters preserve tissue structure</figcaption></figure>
+<figure class="paper-figure dark-panel"><img src="figs/fig5h.png" alt="Spatial expression of assembled marker sequences including short KLK10 and bacterial ribosomal RNA signals."><figcaption>Assembled markers localise within and outside the tissue</figcaption></figure>
 </div>
 
-- Tumour-localised: candidate truncated <i>KLK10</i> 3′ UTR
-- Outside tissue: bacterial 23S rRNA signal
+<div class="result-line"><i>KLK10</i> short-form signal localised within tumour regions; bacterial rRNA markers appeared outside the tissue.</div>
 
-<div class="source">Paper, Fig. 5e–h</div>
+<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 5e,h</div>
 
 ## What can we do with the tool?
 
