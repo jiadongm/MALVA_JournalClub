@@ -1,0 +1,39 @@
+:root {
+  --r-background-color: #fbfbf8;
+  --r-main-color: #172b38;
+  --r-heading-color: #163d52;
+  --r-link-color: #1b6b79;
+  --r-main-font: Arial, Helvetica, sans-serif;
+  --r-heading-font: Arial, Helvetica, sans-serif;
+  --r-main-font-size: 31px;
+}
+.reveal .slides section { text-align: left; }
+.reveal h1 { font-size: 2.15em; letter-spacing: -0.035em; }
+.reveal h2 { font-size: 1.43em; border-bottom: 4px solid #d6e8e8; padding-bottom: .18em; margin-bottom: .45em; }
+.reveal ul { margin-left: 1.15em; }
+.reveal li { margin: .27em 0; }
+.reveal strong { color: #13566a; }
+.reveal code { color: #174f65; background: #eef4f4; border-radius: 5px; padding: .04em .2em; }
+.reveal .slide-number { color: #607780; font-size: 15px; }
+.reveal .footer { color: #71828a; font-size: 14px; }
+.source { position: absolute; bottom: .1em; left: 0; color: #60737c; font-size: .42em; }
+.source a { color: #60737c; }
+.question { color: #15566b; font-size: 1.5em; font-weight: 700; margin: .8em 0; }
+.question.small { font-size: 1.23em; margin: .65em 0; }
+.aside { background: #edf4f2; border-left: 6px solid #3a8390; padding: .35em .6em; margin-top: .8em; font-size: .77em; }
+.demo-note { background: #fff2dc; border-left: 6px solid #bc8125; padding: .3em .6em; margin-top: .8em; font-size: .7em; }
+.flow { display: flex; gap: .4em; align-items: stretch; justify-content: space-between; margin: 1.1em 0; }
+.flow.compact { margin: .8em 0 1.15em; }
+.flowbox { flex: 1; background: #e8f1f2; border: 2px solid #a9c9cc; padding: .6em .4em; border-radius: 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+.flowbox b { color: #153f52; }
+.flowbox small { display: block; font-size: .6em; color: #4b6874; margin-top: .2em; }
+.arrow { align-self: center; color: #357783; font-size: 1.25em; font-weight: bold; }
+.resultbox { background: #dceee3; border: 2px solid #8db8a0; border-radius: 10px; text-align: center; padding: .4em; margin-top: -.3em; }
+.threecol { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55em; margin: 1.1em 0; }
+.threecol > div { background: #e8f1f2; border-radius: 10px; padding: .55em; min-height: 4.2em; }
+.threecol b { color: #134c60; }
+.threecol p { font-size: .75em; margin: .4em 0 0; }
+.sequence-demo { background: #edf4f2; border-radius: 12px; padding: .65em; margin: .9em 0; font-size: .78em; }
+.sequence-demo > div { margin: .25em 0; }
+.sequence-demo .label { display: inline-block; min-width: 3.6em; font-weight: bold; }
+.reveal section.appendix { font-size: .85em; }
