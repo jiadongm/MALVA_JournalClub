@@ -1,12 +1,14 @@
 ---
-title: "Searching single-cell data by sequence"
-subtitle: "Malva · MIG Journal Club"
-author: "Jiadong Mao and Xiaochen Zhang"
+title: "Buy one get two: leveraging DNA level information from scRNA-seq"
+subtitle: "MIG Journal Club: MALVA for sequence pattern discovery from scRNA-seq"
+author: "Jiadong Mao & Xiaochen Zhang"
 date: "8 October 2026"
 format:
   revealjs:
     theme: simple
     css: styles.css
+    auto-stretch: false
+    fig-align: center
     slide-number: true
     hash: true
     transition: none
@@ -18,47 +20,93 @@ execute:
   echo: false
 ---
 
-## The question
+## The question: Which cells contain this sequence?
 
-<div class="question">Which cells contain this sequence?</div>
+::: {.sequence-demo}
+**Example: *DNMT3A* R882H (27 bases)**
 
-- A mutation
-- A splice junction
-- An unannotated RNA
-- A microbial sequence
+CGTCTCCAACATGAGCC**G**CTTGGCGAG (usual)
 
-<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 1 · <a href="https://doi.org/10.1038/s41586-026-10975-w">doi:10.1038/s41586-026-10975-w</a></div>
+CGTCTCCAACATGAGCC**A**CTTGGCGAG (mutated)
 
-## What is lost in a gene-count matrix?
+**G → A** mutation *DNMT3A* c.2645G>A
+:::
 
-<div class="flow">
-  <div class="flowbox"><b>Sequencing reads</b><small>ACGT… · cell barcode</small></div>
-  <div class="arrow">→</div>
-  <div class="flowbox"><b>Reference mapping</b><small>assign reads to genes</small></div>
-  <div class="arrow">→</div>
-  <div class="flowbox"><b>Cell × gene counts</b><small>many sequences, one gene total</small></div>
-</div>
+- **Clonal haematopoiesis:** blood cells descended from one mutated stem cell
+
+::: {.question .small}
+Which blood cells contain this changed sequence in their RNA?
+:::
+
+What could this search tell us?
+
+- Which blood-cell types show the mutation?
+- Do cells with the mutation form a distinct group?
+- Where are other changed gene sequences found?
+
+Conventional way: single-cell DNA seq.
+
+::: {.source}
+Sequence context: [Berenstein et al. 2015](https://pmc.ncbi.nlm.nih.gov/articles/PMC4443651/) · R882H variant: [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/variation/375881/) · Clonal haematopoiesis: [Nam et al. 2023](https://pmc.ncbi.nlm.nih.gov/articles/PMC10068894/)
+:::
+
+
+
+
+
+## What is lost in a gene-count matrix (Xiaochen part)?
+
+:::: {.flow}
+::: {.flowbox}
+**Sequencing reads**
+
+[ACGT… · cell barcode]{.flow-subtitle}
+:::
+::: {.arrow}
+→
+:::
+::: {.flowbox}
+**Reference mapping**
+
+[assign reads to genes]{.flow-subtitle}
+:::
+::: {.arrow}
+→
+:::
+::: {.flowbox}
+**Cell × gene counts**
+
+[many sequences, one gene total]{.flow-subtitle}
+:::
+::::
 
 - Gene counts: a useful summary of expression
 - Sequence differences: often absent from the summary
 - Malva: query the underlying RNA sequence evidence
 
-<div class="source">Paper, Introduction and Fig. 1</div>
+::: {.source}
+Paper, Introduction and Fig. 1
+:::
 
 ## Glossary 1 · k-mers and probes
 
-<div class="sequence-demo">
-  <div><span class="label">Read</span><code>ACGTTACGAT</code></div>
-  <div><span class="label">4-mers</span><code>ACGT</code> <code>CGTT</code> <code>GTTA</code> <code>TTAC</code> <code>TACG</code> <code>ACGA</code> <code>CGAT</code></div>
-</div>
+::: {.sequence-demo}
+**Read:** `ACGTTACGAT`
+
+**4-mers:** `ACGT` `CGTT` `GTTA` `TTAC` `TACG` `ACGA` `CGAT`
+:::
 
 - **k-mer:** a sequence of *k* nucleotides
 - **Probe:** sequence submitted for search
 - **Index:** stored links between k-mers and their cells
 
-<div class="aside">Illustration: overlapping 4-mers · Malva index: sampled 24-mers by default · probe search: sliding windows</div>
+::: {.slide-aside}
+Illustration: overlapping 4-mers · Malva index: sampled 24-mers by default · probe search: sliding windows
+:::
 
-<div class="source">Paper, Methods: Malva Index architecture; sequence querying</div>
+::: {.source}
+Paper, Methods: Malva Index architecture; sequence querying
+:::
 
 ## Glossary 2 · interpretation
 
@@ -68,23 +116,45 @@ execute:
 - **Pseudocount:** Malva's k-mer match total; not a UMI count
 - **Bucket:** group of related k-mers used as one cell feature
 
-<div class="source">Paper, Figs. 3–5 and Discussion</div>
+::: {.source}
+Paper, Figs. 3–5 and Discussion
+:::
 
 ## Malva in one diagram
 
-<div class="flow">
-  <div class="flowbox"><b>Public FASTQ files</b><small>reads + cell barcodes</small></div>
-  <div class="arrow">→</div>
-  <div class="flowbox"><b>Malva Index</b><small>k-mer → cells</small></div>
-  <div class="arrow">←</div>
-  <div class="flowbox"><b>Sequence query</b><small>variant · junction · gene</small></div>
-</div>
-<div class="resultbox">Matched cells + sample and cell metadata</div>
+:::: {.flow}
+::: {.flowbox}
+**Public FASTQ files**
+
+[reads + cell barcodes]{.flow-subtitle}
+:::
+::: {.arrow}
+→
+:::
+::: {.flowbox}
+**Malva Index**
+
+[k-mer → cells]{.flow-subtitle}
+:::
+::: {.arrow}
+←
+:::
+::: {.flowbox}
+**Sequence query**
+
+[variant · junction · gene]{.flow-subtitle}
+:::
+::::
+::: {.resultbox}
+Matched cells + sample and cell metadata
+:::
 
 - Index each dataset; merge indices as data arrive
 - Search across datasets without remapping reads
 
-<div class="source">Paper, Fig. 1 and Methods</div>
+::: {.source}
+Paper, Fig. 1 and Methods
+:::
 
 ## What is new here?
 
@@ -92,180 +162,320 @@ execute:
 - Index design for low-memory queries and incremental updates
 - Cell-by-sequence analysis beyond targeted searches
 
-<div class="aside">Combined contribution: scalable retrieval · linked cell metadata · sequence-derived cell features</div>
+::: {.slide-aside}
+Combined contribution: scalable retrieval · linked cell metadata · sequence-derived cell features
+:::
 
-<div class="source">Paper, Introduction, Figs. 1–2 and Fig. 5</div>
+::: {.source}
+Paper, Introduction, Figs. 1–2 and Fig. 5
+:::
 
 ## How to read a positive result
 
-<div class="threecol">
-  <div><b>Probe</b><p>What sequence was searched?</p></div>
-  <div><b>Observability</b><p>Was that locus sampled?</p></div>
-  <div><b>Context</b><p>Which cell, donor, tissue and assay?</p></div>
-</div>
+:::: {.columns .threecol}
+::: {.column width="32%"}
+**Probe**
+
+What sequence was searched?
+:::
+::: {.column width="32%"}
+**Observability**
+
+Was that locus sampled?
+:::
+::: {.column width="32%"}
+**Context**
+
+Which cell, donor, tissue and assay?
+:::
+::::
 
 - A hit: evidence for the queried RNA sequence
 - No hit: may reflect limited expression or coverage
 - Compare positive cells with a suitable denominator
 
-<div class="source">Paper, Results and Limitations</div>
+::: {.source}
+Paper, Results and Limitations
+:::
 
 ## 1 · Germline variation
 
-<div class="question small">Can atlas RNA data recover known population variants?</div>
+::: {.question .small}
+Can atlas RNA data recover known population variants?
+:::
 
 - 296,985 common, coding, biallelic SNPs
 - 64-nucleotide allele-specific probes
 - Healthy and disease samples; altered-sequence controls
 
-<div class="source">Paper, Fig. 3b and “Screening for germline variation”</div>
+::: {.source}
+Paper, Fig. 3b and “Screening for germline variation”
+:::
 
 ## Germline screening · result and boundary
+::::: {.columns .figure-split .germline}
+:::: {.column width="42%"}
+::: {.paper-figure}
+![](figs/fig3b.png){fig-alt="Observed alternative allele frequencies in healthy and disease samples track population frequencies; altered-sequence controls do not." width="100%"}
+:::
+::::
+:::: {.column .figure-notes width="58%"}
+[Observed allele frequencies tracked population expectations in healthy and disease samples.]{.takeaway}
 
-<div class="figure-split germline">
-<figure class="paper-figure"><img src="figs/fig3b.png" alt="Observed alternative allele frequencies in healthy and disease samples track population frequencies; altered-sequence controls do not."></figure>
-<div class="figure-notes"><div class="takeaway">Observed allele frequencies tracked population expectations in healthy and disease samples.</div><p>The altered-sequence controls stayed near the background rate.</p><div class="boundary-note">A positive allele probe gives RNA sequence evidence. It does not resolve the donor genotype without coverage and allele-expression checks.</div></div>
-</div>
+The altered-sequence controls stayed near the background rate.
 
-<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 3b</div>
+::: {.boundary-note}
+A positive allele probe gives RNA sequence evidence. It does not resolve the donor genotype without coverage and allele-expression checks.
+:::
+::::
+:::::
 
+::: {.source}
+León-Periñán et al., *Nature* 2026, Fig. 3b
+:::
 ## 2 · Isoform usage
 
-<div class="flow compact">
-  <div class="flowbox"><b>Same gene</b><small>similar total counts</small></div>
-  <div class="arrow">≠</div>
-  <div class="flowbox"><b>Same transcript</b><small>different exons or 3′ ends</small></div>
-</div>
+:::: {.flow .compact}
+::: {.flowbox}
+**Same gene**
+
+[similar total counts]{.flow-subtitle}
+:::
+::: {.arrow}
+≠
+:::
+::: {.flowbox}
+**Same transcript**
+
+[different exons or 3′ ends]{.flow-subtitle}
+:::
+::::
 
 - Probe a distinguishing exon, junction or 3′ UTR segment
 - Compare signal across cell types or spatial regions
 - Check assay coverage before interpretation
 
-<div class="source">Paper, Fig. 3c–d</div>
+::: {.source}
+Paper, Fig. 3c–d
+:::
 
-## Example · <i>Ptprc</i> exon A
+## Example · *Ptprc* exon A
+::::: {.columns .figure-split .wide-figure}
+:::: {.column width="70%"}
+::: {.paper-figure}
+![](figs/fig3c.png){fig-alt="Coverage-like query across the Ptprc locus in Tabula Muris cell types." width="100%"}
+:::
+::::
+:::: {.column .figure-notes width="30%"}
+[B cells show stronger inclusion of exon A than the other immune populations.]{.takeaway}
 
-<div class="figure-split wide-figure">
-<figure class="paper-figure"><img src="figs/fig3c.png" alt="Coverage-like query across the Ptprc locus in Tabula Muris cell types."></figure>
-<div class="figure-notes"><div class="takeaway">B cells show stronger inclusion of exon A than the other immune populations.</div><p>Gene totals conceal this exon-level contrast.</p><div class="boundary-note">Coverage supports exon usage. Full-length isoform assignment needs evidence across the transcript.</div></div>
-</div>
+Gene totals conceal this exon-level contrast.
 
-<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 3c</div>
+::: {.boundary-note}
+Coverage supports exon usage. Full-length isoform assignment needs evidence across the transcript.
+:::
+::::
+:::::
 
-## Example · <i>Add2</i> 3′ UTR
+::: {.source}
+León-Periñán et al., *Nature* 2026, Fig. 3c
+:::
+## Example · *Add2* 3′ UTR
+::::: {.columns .figure-split .add2}
+:::: {.column width="70%"}
+::: {.paper-figure}
+![](figs/fig3d.png){fig-alt="Add2 3-prime UTR coverage through mouse development and spatial maps of short and long forms." width="100%"}
+:::
+::::
+:::: {.column .figure-notes width="30%"}
+[The distal 3′ UTR signal localises to developing neural tissue; the proximal form accumulates in liver.]{.takeaway}
 
-<div class="figure-split add2">
-<figure class="paper-figure"><img src="figs/fig3d.png" alt="Add2 3-prime UTR coverage through mouse development and spatial maps of short and long forms."></figure>
-<div class="figure-notes"><div class="takeaway">The distal 3′ UTR signal localises to developing neural tissue; the proximal form accumulates in liver.</div><p>Spatial context explains the apparent developmental shift in bulk profiles.</p></div>
-</div>
+Spatial context explains the apparent developmental shift in bulk profiles.
+::::
+:::::
 
-<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 3d</div>
-
+::: {.source}
+León-Periñán et al., *Nature* 2026, Fig. 3d
+:::
 ## 3 · Cancer somatic mutations
 
-<div class="question small">Can known tumour mutations be found in single-cell RNA?</div>
+::: {.question .small}
+Can known tumour mutations be found in single-cell RNA?
+:::
 
 - Allele-specific probes for expressed SNVs
 - Comparison with scTML mutation calls
 - 280 tumour samples across 16 cancer types
 
-<div class="source">Paper, Fig. 4 and “Querying cancer somatic mutations at scale”</div>
+::: {.source}
+Paper, Fig. 4 and “Querying cancer somatic mutations at scale”
+:::
 
 ## Somatic mutations · what was shown
+::: {.paper-figure .full-width}
+![](figs/fig4.png){fig-alt="Pan-cancer mutation detection specificity and sensitivity, detection by mutation frequency, and sensitivity by mutation type." width="100%"}
+:::
 
-<figure class="paper-figure full-width">
-  <img src="figs/fig4.png" alt="Pan-cancer mutation detection specificity and sensitivity, detection by mutation frequency, and sensitivity by mutation type.">
-</figure>
+::: {.result-line}
+**Across cancer types:** high specificity and mean sensitivity around 0.94. Splice-proximal variants were harder to recover.
+:::
 
-<div class="result-line"><b>Across cancer types:</b> high specificity and mean sensitivity around 0.94. Splice-proximal variants were harder to recover.</div>
+::: {.boundary-note .compact-note}
+This benchmark tests retrieval of supplied mutations. Clone inference needs multiple informative loci and independent checks.
+:::
 
-<div class="boundary-note compact-note">This benchmark tests retrieval of supplied mutations. Clone inference needs multiple informative loci and independent checks.</div>
-
-<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 4a–c</div>
-
+::: {.source}
+León-Periñán et al., *Nature* 2026, Fig. 4a–c
+:::
 ## 4 · From sequence search to cell comparison
+::::: {.columns .figure-split .representation}
+:::: {.column width="53%"}
+::: {.paper-figure}
+![](figs/fig5a.png){fig-alt="Sequenced cells represented as either cell-by-gene counts or cell-by-sequence features before dimensionality reduction." width="100%"}
+:::
+::::
+:::: {.column .figure-notes width="47%"}
+[The same reads can support a gene-count representation or a sequence-derived representation.]{.takeaway}
 
-<div class="figure-split representation">
-<figure class="paper-figure"><img src="figs/fig5a.png" alt="Sequenced cells represented as either cell-by-gene counts or cell-by-sequence features before dimensionality reduction."></figure>
-<div class="figure-notes"><div class="takeaway">The same reads can support a gene-count representation or a sequence-derived representation.</div><p>Malva groups related k-mers into buckets, then builds an embedding for neighbours and clusters.</p></div>
-</div>
+Malva groups related k-mers into buckets, then builds an embedding for neighbours and clusters.
+::::
+:::::
 
-<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 5a; Methods: bucketing approach</div>
-
+::: {.source}
+León-Periñán et al., *Nature* 2026, Fig. 5a; Methods: bucketing approach
+:::
 ## Cell clustering from sequence composition
+::::: {.columns .figure-grid .clustering}
+:::: {.column width="44%"}
+::: {.paper-figure}
+![](figs/fig5b.png){fig-alt="Agreement between gene-count and sequence-based latent spaces across human tissues." width="100%"}
 
-<div class="figure-grid clustering">
-<figure class="paper-figure"><img src="figs/fig5b.png" alt="Agreement between gene-count and sequence-based latent spaces across human tissues."><figcaption>Agreement varies by tissue and assay</figcaption></figure>
-<figure class="paper-figure"><img src="figs/fig5c.png" alt="Examples of low and high concordance between gene-based cell types and sequence-based clusters."><figcaption>Low and high clustering concordance</figcaption></figure>
-</div>
+[Agreement varies by tissue and assay]{.figure-caption}
+:::
+::::
+:::: {.column width="56%"}
+::: {.paper-figure}
+![](figs/fig5c.png){fig-alt="Examples of low and high concordance between gene-based cell types and sequence-based clusters." width="100%"}
 
-<div class="boundary-note compact-note">Shared structure recovers familiar populations. Divergent clusters need biological evidence before interpretation.</div>
+[Low and high clustering concordance]{.figure-caption}
+:::
+::::
+:::::
 
-<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 5b–c and Extended Data Fig. 10</div>
+::: {.boundary-note .compact-note}
+Shared structure recovers familiar populations. Divergent clusters need biological evidence before interpretation.
+:::
 
+::: {.source}
+León-Periñán et al., *Nature* 2026, Fig. 5b–c and Extended Data Fig. 10
+:::
 ## From a cluster to a marker sequence
+::::: {.columns .figure-grid .markers}
+:::: {.column width="50%"}
+::: {.paper-figure}
+![](figs/fig5e.png){fig-alt="Gene-based and sequence-based spatial clusters in a head and neck tumour section." width="100%"}
 
-<div class="figure-grid markers">
-<figure class="paper-figure"><img src="figs/fig5e.png" alt="Gene-based and sequence-based spatial clusters in a head and neck tumour section."><figcaption>Sequence-derived clusters preserve tissue structure</figcaption></figure>
-<figure class="paper-figure dark-panel"><img src="figs/fig5h.png" alt="Spatial expression of assembled marker sequences including short KLK10 and bacterial ribosomal RNA signals."><figcaption>Assembled markers localise within and outside the tissue</figcaption></figure>
-</div>
+[Sequence-derived clusters preserve tissue structure]{.figure-caption}
+:::
+::::
+:::: {.column width="50%"}
+::: {.paper-figure .dark-panel}
+![](figs/fig5h.png){fig-alt="Spatial expression of assembled marker sequences including short KLK10 and bacterial ribosomal RNA signals." width="100%"}
 
-<div class="result-line"><i>KLK10</i> short-form signal localised within tumour regions; bacterial rRNA markers appeared outside the tissue.</div>
+[Assembled markers localise within and outside the tissue]{.figure-caption}
+:::
+::::
+:::::
 
-<div class="source">León-Periñán et al., <i>Nature</i> 2026, Fig. 5e,h</div>
+::: {.result-line}
+*KLK10* short-form signal localised within tumour regions; bacterial rRNA markers appeared outside the tissue.
+:::
 
+::: {.source}
+León-Periñán et al., *Nature* 2026, Fig. 5e,h
+:::
 ## What can we do with the tool?
 
 - **Targeted search:** a sequence → matching cells and samples
 - **Coverage:** signal along a transcript or region
 - **Cell representation:** buckets → clustering and markers
 
-<div class="aside">Next: three demonstrations · verified inputs · saved outputs</div>
+::: {.slide-aside}
+Next: three demonstrations · verified inputs · saved outputs
+:::
 
-<div class="source"><a href="https://github.com/malva-bio/malva_client">Malva client</a> · <a href="https://malva.readthedocs.io/en/latest/cmd_cellxmer.html">cellxmer documentation</a></div>
+::: {.source}
+[Malva client](https://github.com/malva-bio/malva_client) · [cellxmer documentation](https://malva.readthedocs.io/en/latest/cmd_cellxmer.html)
+:::
 
 ## Demonstration 1 · sequence search
 
 - Warm-up: search **CD3D** and inspect returned cell types
-- Then: paired reference and alternative SNP probes
-- Compare positive cells within a selected sample
+- *DNMT3A* R882H: paired 47-base reference and mutant probes
+- Compare RNA-positive cells within a selected sample
 - Record query, index version, filters and denominator
 
-<div class="demo-note">Pending: API access · tested probe · saved result</div>
+::: {.demo-note}
+Pending: Malva account access · live query · saved result
+:::
 
-<div class="source"><a href="https://github.com/malva-bio/malva_client">Client quick start</a></div>
+::: {.source}
+[Client quick start](https://github.com/malva-bio/malva_client)
+:::
 
 ## Demonstration 2 · transcript usage
 
-- Select a verified <i>Ptprc</i> exon A probe
+- Select a verified *Ptprc* exon A probe
 - Compare B cells with other immune cells
 - Display coverage beside gene-level signal
 - Check capture protocol and probe specificity
 
-<div class="demo-note">Pending: tested probe · selected sample · saved result</div>
+::: {.demo-note}
+Pending: tested probe · selected sample · saved result
+:::
 
-<div class="source">Paper, Fig. 3c · <a href="https://github.com/malva-bio/malva_client">Malva client</a></div>
+::: {.source}
+Paper, Fig. 3c · [Malva client](https://github.com/malva-bio/malva_client)
+:::
 
 ## Demonstration 3 · cell-by-bucket analysis
 
 - Choose a small, publicly available dataset
-- Build cell-by-bucket matrix with <code>cellxmer</code>
+- Build cell-by-bucket matrix with `cellxmer`
 - Compare gene and bucket clustering
 - Inspect one candidate marker sequence
 
-<div class="demo-note">Pending: precomputed index · clusters · marker assembly</div>
+::: {.demo-note}
+Pending: precomputed index · clusters · marker assembly
+:::
 
-<div class="source">Paper, Fig. 5 · <a href="https://malva.readthedocs.io/en/latest/cmd_cellxmer.html">cellxmer documentation</a></div>
+::: {.source}
+Paper, Fig. 5 · [cellxmer documentation](https://malva.readthedocs.io/en/latest/cmd_cellxmer.html)
+:::
 
 ## Three possible research uses
 
-<div class="threecol">
-  <div><b>Data integration</b><p>Sequence features alongside gene counts; improvement on a defined task</p></div>
-  <div><b>Lineage tracing</b><p>Mutation panel; combined evidence across loci and cells</p></div>
-  <div><b>HCA survey</b><p>Clonal haematopoiesis variants in suitable public samples</p></div>
-</div>
+:::: {.columns .threecol}
+::: {.column width="32%"}
+**Data integration**
 
-<div class="source">Discussion proposals; not applications validated in this paper</div>
+Sequence features alongside gene counts; improvement on a defined task
+:::
+::: {.column width="32%"}
+**Lineage tracing**
+
+Mutation panel; combined evidence across loci and cells
+:::
+::: {.column width="32%"}
+**HCA survey**
+
+Clonal haematopoiesis variants in suitable public samples
+:::
+::::
+
+::: {.source}
+Discussion proposals; not applications validated in this paper
+:::
 
 ## What must be checked?
 
@@ -275,7 +485,9 @@ execute:
 - Independent evidence for genotype or clone assignment
 - Privacy implications of donor-linked variants
 
-<div class="source">Paper, Limitations and Supplementary Discussion</div>
+::: {.source}
+Paper, Limitations and Supplementary Discussion
+:::
 
 ## Discussion
 
@@ -284,7 +496,9 @@ execute:
 - What evidence would make a mutation-defined clone convincing?
 - Is an HCA clonal haematopoiesis survey feasible with RNA coverage?
 
-<div class="source">León-Periñán et al., <i>Nature</i> 2026</div>
+::: {.source}
+León-Periñán et al., *Nature* 2026
+:::
 
 ## References {.appendix}
 
