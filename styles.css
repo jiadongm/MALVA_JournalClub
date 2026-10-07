@@ -1,71 +1,195 @@
 :root {
-  --r-background-color: #fbfbf8;
-  --r-main-color: #172b38;
-  --r-heading-color: #163d52;
-  --r-link-color: #1b6b79;
-  --r-main-font: Arial, Helvetica, sans-serif;
-  --r-heading-font: Arial, Helvetica, sans-serif;
-  --r-main-font-size: 31px;
+  --r-background-color: #ffffff;
+  --r-main-color: #1f2933;
+  --r-heading-color: #12324d;
+  --r-link-color: #1b5e8c;
+  --r-main-font: "Source Sans Pro", Helvetica, Arial, sans-serif;
+  --r-heading-font: "Source Sans Pro", Helvetica, Arial, sans-serif;
+  --r-main-font-size: 27px;
 }
+
 .reveal .slides section { text-align: left; }
-.reveal h1 { font-size: 2.15em; letter-spacing: -0.035em; }
-.reveal h2 { font-size: 1.43em; border-bottom: 4px solid #d6e8e8; padding-bottom: .18em; margin-bottom: .45em; }
+.reveal .slides section#title-slide { text-align: center; }
+.reveal h1 { font-size: 2.15em; letter-spacing: -0.02em; }
+.reveal h2 {
+  font-size: 1.35em;
+  border-bottom: 3px solid #d98c2b;
+  padding-bottom: .15em;
+  margin-bottom: .5em;
+}
 .reveal ul { margin-left: 1.15em; }
 .reveal li { margin: .27em 0; }
-.reveal strong { color: #13566a; }
-.reveal code { color: #174f65; background: #eef4f4; border-radius: 5px; padding: .04em .2em; }
-.reveal .slide-number { color: #607780; font-size: 15px; }
-.reveal .footer { color: #71828a; font-size: 14px; }
-.source { position: absolute; bottom: .1em; left: 0; color: #60737c; font-size: .42em; }
+.reveal strong { color: #12324d; }
+.reveal a { color: #1b5e8c; }
+.reveal code {
+  color: #12324d;
+  background: #eef3f8;
+  border-radius: 4px;
+  padding: .04em .2em;
+}
+.reveal .slide-number { color: #485969; font-size: .5em; }
+.source {
+  position: absolute;
+  bottom: -.35em;
+  left: 0;
+  color: #6b7785;
+  font-size: .5em;
+}
 .source p { margin: 0; }
-.source a { color: #60737c; }
-.question { color: #15566b; font-size: 1.5em; font-weight: 700; margin: .8em 0; }
-.question p, .slide-aside p, .demo-note p, .resultbox p, .boundary-note p, .result-line p { margin: 0; }
+.source a { color: #6b7785; }
+
+.question {
+  color: #12324d;
+  font-size: 1.5em;
+  font-weight: 700;
+  margin: .8em 0;
+}
+.question p,
+.slide-aside p,
+.demo-note p,
+.resultbox p,
+.boundary-note p,
+.result-line p { margin: 0; }
 .question.small { font-size: 1.23em; margin: .65em 0; }
-.slide-aside { background: #edf4f2; border-left: 6px solid #3a8390; padding: .35em .6em; margin-top: .8em; font-size: .77em; }
-.demo-note { background: #fff2dc; border-left: 6px solid #bc8125; padding: .3em .6em; margin-top: .8em; font-size: .7em; }
+
+.slide-aside,
+.takeaway {
+  background: #fdf3e6;
+  border-left: 6px solid #d98c2b;
+  padding: .35em .7em;
+}
+.slide-aside { margin-top: .8em; font-size: .77em; }
+.takeaway {
+  display: block;
+  color: #12324d;
+  font-size: 1.05em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.demo-note {
+  background: #fdf3e6;
+  border-left: 6px solid #d98c2b;
+  padding: .35em .7em;
+  margin-top: .8em;
+  font-size: .7em;
+}
+.boundary-note {
+  background: #eef3f8;
+  border-left: 6px solid #1b5e8c;
+  padding: .35em .7em;
+  margin-top: .8em;
+  font-size: .78em;
+  line-height: 1.25;
+}
+
 .flow { display: flex; gap: .4em; align-items: stretch; justify-content: space-between; margin: 1.1em 0; }
 .flow.compact { margin: .8em 0 1.15em; }
-.flowbox { flex: 1; background: #e8f1f2; border: 2px solid #a9c9cc; padding: .6em .4em; border-radius: 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+.flowbox {
+  flex: 1;
+  background: #eef3f8;
+  border: 2px solid #b9cad8;
+  padding: .6em .4em;
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .flowbox p { margin: 0; }
-.flowbox b { color: #153f52; }
-.flowbox .flow-subtitle { display: block; font-size: .6em; color: #4b6874; margin-top: .2em; }
-.arrow { align-self: center; color: #357783; font-size: 1.25em; font-weight: bold; }
-.resultbox { background: #dceee3; border: 2px solid #8db8a0; border-radius: 10px; text-align: center; padding: .4em; margin-top: -.3em; }
+.flowbox b { color: #12324d; }
+.flowbox .flow-subtitle { display: block; font-size: .6em; color: #536575; margin-top: .2em; }
+.arrow { align-self: center; color: #1b5e8c; font-size: 1.25em; font-weight: bold; }
+.resultbox {
+  background: #eef3f8;
+  border: 2px solid #b9cad8;
+  border-radius: 8px;
+  text-align: center;
+  padding: .4em;
+  margin-top: -.3em;
+}
+
 .threecol { gap: .55em; margin: 1.1em 0; }
-.threecol > .column { box-sizing: border-box; background: #e8f1f2; border-radius: 10px; padding: .55em; min-height: 4.2em; }
-.threecol strong { color: #134c60; }
+.threecol > .column {
+  box-sizing: border-box;
+  background: #eef3f8;
+  border-radius: 8px;
+  padding: .55em;
+  min-height: 4.2em;
+}
+.threecol strong { color: #12324d; }
 .threecol .column p { margin: .4em 0 0; }
 .threecol .column p + p { font-size: .75em; }
-.sequence-demo { background: #edf4f2; border-radius: 12px; padding: .65em; margin: .9em 0; font-size: .78em; }
+.sequence-demo {
+  background: #eef3f8;
+  border-radius: 8px;
+  padding: .65em;
+  margin: .9em 0;
+  font-size: .78em;
+}
 .sequence-demo p { margin: .25em 0; }
+
 .figure-split > .column { vertical-align: middle; }
 .paper-figure { margin: 0; min-width: 0; text-align: center; }
 .paper-figure p { margin: 0; }
-.paper-figure img { display: block; width: 100%; height: auto; max-height: 610px; object-fit: contain; margin: 0 auto; }
+.paper-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 488px;
+  object-fit: contain;
+  margin: 0 auto;
+}
 .germline .paper-figure p { margin: 0; }
-.paper-figure img { max-height: 620px; }
+.germline .paper-figure img { max-height: 496px; }
 .wide-figure .paper-figure p { margin: 0; }
-.paper-figure img { max-height: 590px; }
+.wide-figure .paper-figure img { max-height: 472px; }
 .add2 .paper-figure p { margin: 0; }
-.paper-figure img { max-height: 590px; }
+.add2 .paper-figure img { max-height: 472px; }
 .representation .paper-figure p { margin: 0; }
-.paper-figure img { max-height: 570px; }
-.paper-figure.full-width img { max-height: 485px; }
+.representation .paper-figure img { max-height: 456px; }
+.paper-figure.full-width img { max-height: 388px; }
 .figure-notes { font-size: .78em; }
 .figure-notes p { margin: .7em 0; }
-.takeaway { display: block; color: #15566b; font-size: 1.12em; font-weight: 700; line-height: 1.25; }
-.result-line { color: #173f50; font-size: .73em; margin-top: .5em; line-height: 1.3; }
-.boundary-note { background: #edf4f2; border-left: 6px solid #3a8390; padding: .35em .6em; margin-top: .8em; font-size: .78em; line-height: 1.25; }
+.result-line { color: #12324d; font-size: .73em; margin-top: .5em; line-height: 1.3; }
 .compact-note { font-size: .62em; margin-top: .5em; }
 .figure-grid > .column { vertical-align: top; }
 .figure-grid .paper-figure p { margin: 0; }
-.paper-figure img { max-height: 505px; }
-.figure-grid .figure-caption { display: block; color: #4d6670; font-size: .5em; line-height: 1.2; margin-top: .28em; }
+.figure-grid .paper-figure img { max-height: 404px; }
+.figure-grid .figure-caption { display: block; color: #536575; font-size: .5em; line-height: 1.2; margin-top: .28em; }
 .figure-grid.clustering .paper-figure p { margin: 0; }
-.paper-figure img { max-height: 500px; }
+.figure-grid.clustering .paper-figure img { max-height: 400px; }
 .figure-grid.markers .paper-figure p { margin: 0; }
-.paper-figure img { max-height: 455px; }
+.figure-grid.markers .paper-figure img { max-height: 364px; }
 .dark-panel { background: #000; }
-.dark-panel .figure-caption { background: #fbfbf8; margin: 0; padding-top: .28em; }
+.dark-panel .figure-caption { background: #fff; margin: 0; padding-top: .28em; }
 .reveal section.appendix { font-size: .85em; }
+
+/* Monash Spatial CoP palette for the deck's custom diagrams */
+.hgp-card,
+.reference-allele,
+.variant-card,
+.origin-card,
+.gene-model-panel,
+.isoform-card,
+.end-panel,
+.bias-transcript { background: #eef3f8; border-color: #b9cad8; }
+.coordinate-card,
+.alternative-allele,
+.snv-card,
+.somatic-card,
+.skip-exon,
+.unannotated-panel,
+.bias-consequence { background: #fdf3e6; border-color: #e6bd88; }
+.hgp-label,
+.genotype-label,
+.variant-label,
+.model-label,
+.bias-row-label b { color: #12324d; }
+.hgp-arrow,
+.variant-arrow,
+.splicing-arrow { color: #1b5e8c; }
+.case-link span,
+.hgp-definition,
+.allele-definitions > .column,
+.variant-definitions > .column,
+.transcript-definitions > .column { border-top-color: #d98c2b; }

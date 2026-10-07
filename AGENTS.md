@@ -2,55 +2,137 @@
 
 ## Purpose and audience
 
-Quarto/reveal.js slides for the Melbourne Integrative Genomics journal club on 8 October 2026. The audience includes statisticians, bioinformaticians and biologists; some will only have skimmed the paper.
+This project contains Quarto/reveal.js slides for the Melbourne Integrative Genomics journal club on 8 October 2026. The audience includes statisticians, bioinformaticians and biologists. Some attendees may only have skimmed the paper.
 
 Source paper: León-Periñán, Karaiskos & Rajewsky, *Nature* (2026), https://doi.org/10.1038/s41586-026-10975-w.
 
-The agreed narrative is: what sequence search adds to gene-count analysis; a short explanation of Malva; germline variants, isoforms, somatic mutations and cell-by-sequence analysis; tool demonstrations; research uses in integration, lineage tracing and HCA clonal haematopoiesis screening.
+The presentation asks what direct sequence search adds to gene-count analysis. It introduces the concepts needed to interpret MALVA, then uses biological case studies.
 
-## Current state
+## Division of the presentation
 
-- `slides.qmd`: 26 slides including title and references.
-- `styles.css`: slide styling and simple diagrams.
-- `slides.html` and `slides_files/`: Quarto render output. `quarto render slides.qmd` succeeds.
-- `figs/`: cropped, presentation-sized panels from paper Figs. 3–5. Result slides now show Fig. 3b–d, Fig. 4a–c and selected Fig. 5 panels with on-slide citations.
-- Three demonstration slides describe planned workflows. They contain no tested Malva output. The client is installed in a project-local `.venv`, and `scripts/query_dnmt3a_r882h.py` prepares a paired DNMT3A R882H/reference search. Live Malva account access is denied as of 2 October 2026, and the anonymous API returns “Authentication required”; no query result has been obtained.
-- The figure slides and their neighbouring setup slides were inspected at 1600 × 900 through a local web server after rendering.
+JD introduces the biological and sequencing concepts before Xiaochen's section. Xiaochen covers the technical explanation of MALVA. The shared deck contains one section-divider slide as the placeholder for his material.
 
-## Next step: obtain Malva access and verify the demonstrations
+JD resumes with concepts and case studies after Xiaochen's section. Do not duplicate Xiaochen's technical explanation unless the user requests it.
 
-Select exact probes and datasets, obtain Malva API access or a local index, and run each planned demonstration. Save enough information to reproduce every result:
+## Current deck structure
 
-1. Query or probe sequence.
-2. Dataset, sample and cell filters.
-3. Malva client and index versions.
-4. Thresholds, normalisation and denominator.
-5. Saved output and the command or notebook that produced it.
+The main deck has 23 Reveal slides, including the title slide and two section-divider slides.
 
-Replace each amber “Pending” note only after the corresponding workflow has run successfully. Distinguish a tested result from an illustrative workflow, and keep the RNA-observability caveats already present in the deck.
+Before Xiaochen's section:
 
-## DNMT3A R882H query findings (2 October 2026)
+- The question: which cells contain this sequence?
+- Reference genome, illustrated with the Human Genome Project.
+- Transcript ends and 3-prime or 5-prime biased single-cell RNA sequencing.
 
-- Target: DNMT3A NM_022552.5:c.2645G>A (p.Arg882His), on the transcript strand. The current 47-base reference and R882H probes in `scripts/query_dnmt3a_r882h.py` differ only at base 24. All their 24-mers cross that base. GRCh38 genomic position: chr2:25,234,373 C>T on the opposite strand; verify against the UCSC sequence and ClinVar links in `README.md` before changing probes.
-- Paper's variant benchmark: paired 45-base probes centred on each SNV, searched against the corresponding sample index with window size `w=24` and match threshold `tau=1.0`. The 45-base versions of our probes (one base trimmed from each end) are reference `ACTGACGTCTCCAACATGAGCCGCTTGGCGAGGCAGAGACTGCTG` and R882H `ACTGACGTCTCCAACATGAGCCACTTGGCGAGGCAGAGACTGCTG`.
-- Important limitation of the prepared runner: `malva-client` 0.3.4 `search_sequences()` submits the paired 47-base probes with `max_kmer_presence=50000` but does not expose `window_size` or `threshold`. Do not describe a result from that runner as a replication of the paper's variant-specific settings. The lower-level client `submit_search()` exposes those two parameters but has not been tested here for paired batch sequences. The local `MalvaIndex.where()` API exposes `sliding_size` and `pct_threshold`.
-- Hosted route: the paper says the public API is accessible to academic users through ORCID, but this account was denied access. The unauthenticated search API requires authentication. Request account approval from the Malva team; then test the API and save results. No token or query result exists in this repository.
-- Local route: obtain the Malva wheel or Apptainer distribution from the team, select a dataset with raw paired FASTQs and cell barcodes, build a local index, then query the paired probes with `sliding_size=24`, `pct_threshold=1.0`. No dataset or local index has been selected. The installed `malva-client` is only the hosted API client, not the local indexing tool.
-- Interpretation: compare R882H and reference hits in the same samples; include a DNMT3A expression/coverage control and sample metadata. RNA hits are sequence evidence, not definitive cell genotypes. No hit can reflect lack of coverage, especially in 3-prime-biased scRNA-seq.
-- Primary references: https://www.nature.com/articles/s41586-026-10975-w (Methods: EGFR and scTML variant probes); https://malva.readthedocs.io/en/latest/examples/3_sequence_search.html (local query API); https://malva.readthedocs.io/en/latest/installation.html (local distribution); https://malva-client.readthedocs.io/en/latest/query_parameters.html (hosted client SNV guidance).
+After Xiaochen's section:
 
-Next session: decide whether hosted access can be approved or choose an appropriate raw-read dataset and obtain the local tool. Then adjust the query runner to the paper's 45-base probes and exact search settings, execute the query, inspect controls and cell-level hits, and only then add a result to the demonstration slides.
+- What MALVA adds.
+- Allele, genotype and wild type.
+- Variant, single-nucleotide variant and single-nucleotide polymorphism.
+- Germline, somatic and clonal variation.
+- Germline screening and cancer somatic mutation cases.
+- Transcript, splice junction and isoform.
+- Isoform cases.
+- Sequence-based cell clustering and marker sequences.
+- Research uses and limitations.
+- References and backup slides.
+
+## Current files and style
+
+- `slides.qmd`: presentation source.
+- `styles.css`: presentation styling and diagrams.
+- `reference.css`: additional generated or supporting styles.
+- `slides.html` and `slides_files/`: rendered presentation.
+- `figs/`: presentation figures and cropped paper panels.
+- `Malva_Xiaochen_part.pptx`: Xiaochen's technical slides for reference.
+
+The current style follows `/Users/jmao1/Library/CloudStorage/Dropbox/Slides/Slides - JD/MonashSpatialCoP_Oct2026`.
+
+The deck uses Source Sans Pro, a white background, navy headings, orange title rules, and blue or peach callouts. Section dividers use a navy background. The canvas is 1280 by 720 pixels.
+
+`quarto render slides.qmd` succeeds. A browser review found no slide-content overflow and no console errors across all 23 slides.
+
+## Working rule during detailed review
+
+The user is reviewing the slides one by one and asking conceptual questions.
+
+Answer conceptual questions in the chat. Do not change the slides unless the user explicitly requests a slide edit. Preserve user-approved wording, narrative order, citations and unrelated edits.
+
+## Scientific interpretation rules
+
+- A reference allele is the base in the chosen reference assembly. It is not necessarily the wild-type or most common allele.
+- Wild type depends on the biological comparison and study convention. Do not define it only from the reference genome.
+- In common 0, 1 and 2 genotype coding, the value counts copies of the allele defined as the alternate allele. Metadata must define the reference and alternate alleles.
+- A sequence hit in RNA provides evidence that the sequence was observed. It does not by itself prove the complete cellular genotype.
+- A missing RNA hit does not prove a wild-type genotype. The transcript may be absent, weakly expressed or unsampled at that locus.
+- Standard 3-prime single-cell RNA sequencing concentrates reads near polyadenylated transcript ends. It often misses internal coding sites, including DNMT3A codon 882.
+- DNMT3A R882H is a useful somatic mutation example. Detecting it in standard single-cell RNA sequencing usually needs suitable coverage or targeted enrichment.
+- A negative control sequence is an artificial probe with another base altered. It estimates nonspecific or background matches.
+- The concept slide focuses on transcript ends and end-biased sequencing. Introduce unannotated sequences later through the KLK10 and bacterial ribosomal RNA results.
+
+## Known content-review items
+
+These items need a slide edit only when the user requests one:
+
+1. The allele and wild-type slide says that most individuals carry A, then defines T as wild type. This appears internally inconsistent and likely should define A as wild type.
+2. The Ptprc exon A source note cites Figure 4. The example is in Figure 3c.
+3. The germline case could define “negative control sequence” directly on the slide if the audience needs the term.
+
+Continue to check scientific wording, figure citations and examples during the slide-by-slide review.
+
+## Deferred MALVA demonstration work
+
+The current main deck has no live demonstration slides. Keep the earlier query work as optional future material.
+
+Do not present an untested query, selected dataset or generated plot as a completed result. If a demonstration returns, save the query sequence, dataset, filters, software and index versions, thresholds, denominator, output and reproducible command.
+
+## DNMT3A R882H query notes
+
+Target: DNMT3A `NM_022552.5:c.2645G>A (p.Arg882His)` on the transcript strand. The prepared 47-base reference and R882H probes in `scripts/query_dnmt3a_r882h.py` differ only at base 24. Their 24-mers cross that base.
+
+The GRCh38 genomic change is chr2:25,234,373 C>T on the opposite strand. Verify the coordinate against the UCSC sequence and ClinVar links in `README.md` before changing the probes.
+
+The paper's variant benchmark used paired 45-base probes centred on each single-nucleotide variant. It searched the matching sample index with window size `w=24` and match threshold `tau=1.0`.
+
+The 45-base reference probe is:
+
+`ACTGACGTCTCCAACATGAGCCGCTTGGCGAGGCAGAGACTGCTG`
+
+The 45-base R882H probe is:
+
+`ACTGACGTCTCCAACATGAGCCACTTGGCGAGGCAGAGACTGCTG`
+
+The installed `malva-client` 0.3.4 runner submits paired 47-base probes with `max_kmer_presence=50000`. Its `search_sequences()` method does not expose window size or threshold. A result from that runner would not replicate the paper's variant settings.
+
+The lower-level `submit_search()` client exposes these parameters but has not been tested here for paired batch sequences. The local `MalvaIndex.where()` interface exposes `sliding_size` and `pct_threshold`.
+
+Hosted access was denied on 2 October 2026. The anonymous application programming interface also required authentication. No access token or query result exists in this repository.
+
+The local route requires the MALVA distribution, raw paired FASTQ files, cell barcodes and a built index. No local dataset or index has been selected.
+
+If this work resumes, compare R882H and reference hits within the same samples. Include DNMT3A expression or locus-coverage evidence and relevant sample metadata.
+
+Primary references:
+
+- https://www.nature.com/articles/s41586-026-10975-w
+- https://malva.readthedocs.io/en/latest/examples/3_sequence_search.html
+- https://malva.readthedocs.io/en/latest/installation.html
+- https://malva-client.readthedocs.io/en/latest/query_parameters.html
 
 ## Slide conventions
 
-- Plain scientific English; short dot points; minimal full sentences.
-- One claim or question per slide. Define unfamiliar terms before use.
-- Keep the explanation of the algorithm brief. Prioritise biological questions and interpretation.
-- Distinguish sequence evidence from confirmed genotype, isoform or clone assignment. A missing RNA hit is not evidence for a wild-type genotype.
-- Do not present untested queries, selected datasets or generated plots as completed demonstrations.
-- Prefer Quarto/Pandoc syntax for columns, figures, source notes, emphasis and links; reserve raw HTML for cases that Quarto cannot express.
+- Use plain scientific English and short points.
+- Put one main claim or question on each slide.
+- Define unfamiliar terms before using them.
+- Keep the algorithm explanation brief.
+- Emphasise the biological question and interpretation.
+- Distinguish sequence evidence from confirmed genotype, isoform or clone assignment.
+- Use Quarto or Pandoc syntax for columns, figures, source notes, emphasis and links where practical.
+- Use raw HTML only when Quarto cannot express the layout.
 - Preserve citations, user-approved narrative and unrelated edits.
 
-## Later work
+## Next steps
 
-After demonstration verification: insert the saved outputs, rehearse timing and perform a full-deck visual review.
+Continue the slide-by-slide wording and scientific review. Apply edits only when the user explicitly requests them.
+
+After the content review, rehearse the timing and perform one final full-deck visual review.

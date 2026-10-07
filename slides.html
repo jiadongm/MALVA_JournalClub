@@ -10,7 +10,6 @@
   <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Jiadong Mao &amp; Xiaochen Zhang">
-  <meta name="dcterms.date" content="2026-10-08">
   <title>Buy one get one free? Sequence-level information from single-cell RNA-seq</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -36,7 +35,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-0427d8d92a431aa6a6430e53ec02a470.css">
+  <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="reference.css">
   <link href="slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -147,7 +146,7 @@ Jiadong Mao &amp; Xiaochen Zhang
 </div>
 </div>
 
-  <p class="date">2026-10-08</p>
+  <p class="date">8 Oct 2026</p>
 </section>
 <section id="the-question-which-cells-contain-this-sequence" class="slide level2">
 <h2>The question: Which cells contain this sequence?</h2>
@@ -157,34 +156,25 @@ Jiadong Mao &amp; Xiaochen Zhang
 <p>CGTCTCCAACATGAGCC<strong>A</strong>CTTGGCGAG (mutated)</p>
 <p><strong>G → A</strong> mutation <em>DNMT3A</em> c.2645G&gt;A</p>
 </div>
-<ul>
-<li><strong>Clonal haematopoiesis:</strong> blood cells descended from one mutated stem cell</li>
-</ul>
+<p>This one-letter change alters amino accid 882 in DNMT3A protein (hence ‘R882H’), frequently associated with acute myeloid leukaemia (AML).</p>
 <div class="question small">
 <p>Which blood cells contain this changed sequence in their RNA?</p>
 </div>
-<p>What could this search tell us?</p>
+<p>Conventional way: single-cell DNA-seq (expensive, no post-genetic states).</p>
+<p>But we may also want to know:</p>
 <ul>
 <li>Which blood-cell types show the mutation?</li>
-<li>Do cells with the mutation form a distinct group?</li>
-<li>Where are other changed gene sequences found?</li>
+<li>Do cells with the mutation form a distinct group, say transcriptionally?</li>
+<li>Where are other changed gene sequences found (e.g.&nbsp;faster proliferation)?</li>
 </ul>
-<p>Conventional way: single-cell DNA seq.</p>
 <div class="source">
 <p>Sequence context: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4443651/">Berenstein et al.&nbsp;2015</a> · R882H variant: <a href="https://www.ncbi.nlm.nih.gov/clinvar/variation/375881/">ClinVar</a> · Clonal haematopoiesis: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10068894/">Nam et al.&nbsp;2023</a></p>
 </div>
 </section>
-<section id="plan-for-today" class="slide level2">
-<h2>Plan for today</h2>
-<ul>
-<li><p>Biological setup: what sequence differences can reveal</p></li>
-<li><p>Xiaochen: from RNA reads to counts and Malva sequence search</p></li>
-<li><p>Case studies: variants, isoforms and sequence-derived cell features</p></li>
-<li><p>Discussion</p></li>
-</ul>
-</section>
-<section id="human-genome-project-building-the-first-reference" class="slide level2">
-<h2>Human Genome Project: building the first reference</h2>
+<section id="glossary-reference-genome" class="slide level2">
+<h2>Glossary: reference genome</h2>
+<p>‘Alignment’: aligned to what?</p>
+<p>Example: Human Genome Project; Sanger sequencing, reads of 500–1000 bps.</p>
 <div class="hgp-flow">
 <div class="hgp-card donor-card">
 <span class="hgp-label">Anonymous DNA donors</span>
@@ -211,130 +201,305 @@ Jiadong Mao &amp; Xiaochen Zhang
 </div>
 <p><span class="hgp-arrow">›</span></p>
 <div class="hgp-card coordinate-card">
-<span class="hgp-label">One shared reference path</span> <span class="coordinate-name"><i>DNMT3A</i> · c.2645</span>
-<div class="coordinate-sequence">
-…CATGAGCC<span>G</span>CTTGG…
+<span class="hgp-label">Shared coordinate system</span>
+<div class="coordinate-ruler">
+<i></i><i></i><i></i><i></i><i></i><b></b>
 </div>
-<p><span class="hgp-caption">The selected reference base is G</span></p>
+<div class="coordinate-labels">
+<span>chromosome</span><span>region</span><span>position</span>
+</div>
+<p><span class="hgp-caption">The same names and locations can be used for every sample</span></p>
 </div>
 </div>
-<div class="columns hgp-definitions">
-<div class="column" style="width:55%;">
-<p><strong>Reference sequence</strong></p>
-<p>The agreed sequence used to assign locations and compare observed DNA or RNA.</p>
-</div><div class="column" style="width:41%;">
-<p><strong>Reference allele</strong></p>
-<p>The base present on the selected reference path at one position.</p>
-</div></div>
-<div class="slide-aside">
-<p>The reference is a coordinate standard. It is not an average genome and does not preserve every donor’s variants.</p>
-</div>
-<div class="source">
-<p><a href="https://www.genome.gov/about-genomics/educational-resources/fact-sheets/human-genome-project">NHGRI Human Genome Project fact sheet</a> · <a href="https://www.ncbi.nlm.nih.gov/grc/help/faq/">Genome Reference Consortium FAQ</a> · <i>DNMT3A</i> example: <a href="https://www.ncbi.nlm.nih.gov/clinvar/variation/375881/">ClinVar</a></p>
-</div>
-</section>
-<section id="sequence-features-we-may-want-to-find" class="slide level2">
-<h2>Sequence features we may want to find</h2>
+<p><strong>Reference sequence</strong>: the agreed sequence used to assign locations and compare observed DNA or RNA.</p>
 <ul>
-<li><strong>Reference and alternative alleles:</strong> sequence forms at a variant site</li>
-<li><strong>Splice junction:</strong> sequence that joins two exons</li>
-<li><strong>Isoform:</strong> one transcript form of a gene</li>
-<li><strong>Transcript end:</strong> alternative 3′ UTR or polyadenylation site</li>
-<li><strong>Unannotated sequence:</strong> microbial, viral, vector or novel RNA sequence</li>
-</ul>
-<div class="slide-aside">
-<p>Gene totals can match even when the contributing RNA sequences differ.</p>
-</div>
-<div class="source">
-<p>Paper, Introduction and Figs. 3–5</p>
-</div>
-</section>
-<section id="xiaochen-from-reads-to-sequence-queries" class="slide level2">
-<h2>Xiaochen · from reads to sequence queries</h2>
-<div class="question small">
-<p>Technical section presented by Xiaochen Zhang</p>
-</div>
-<ul>
-<li>Standard RNA sequencing and reference alignment</li>
-<li>Conversion of reads into a cell × gene count matrix</li>
-<li>Sequence information hidden by gene totals</li>
-<li>Malva’s k-mer index and sequence-to-cell queries</li>
-<li>Targeted searches, pseudocounts and bucket features</li>
+<li>The reference is a coordinate standard. It is not an average genome and does not preserve every donor’s variants.</li>
+<li>Short-read seq: since 2005, 50–300 bps.</li>
 </ul>
 <div class="source">
-<p>Technical slides: <i>Malva_Xiaochen_part.pptx</i></p>
+<p><a href="https://www.genome.gov/about-genomics/educational-resources/fact-sheets/human-genome-project">NHGRI Human Genome Project fact sheet</a> · <a href="https://www.ncbi.nlm.nih.gov/grc/help/faq/">Genome Reference Consortium FAQ</a></p>
 </div>
 </section>
-<section id="what-is-new-here" class="slide level2">
-<h2>What is new here?</h2>
+<section id="glossary-transcript-ends-and-end-biased-scrna-seq" class="slide level2">
+<h2>Glossary: transcript ends and end-biased scRNA-seq</h2>
+<p>5′ marks the beginning of an RNA transcript. 3′ marks the end that carries the poly(A) tail.</p>
+<p>UTR: untranslated region</p>
+<div class="bias-transcript">
+<span class="bias-end-label">5′ cap</span><span class="bias-segment bias-utr5">5′ UTR</span><span class="bias-segment bias-coding">protein-coding region<em></em></span><span class="bias-segment bias-utr3">3′ UTR</span><span class="bias-poly-a">AAAAAA</span><span class="bias-end-label">3′</span>
+</div>
+<div class="bias-coverage">
+<div class="bias-row bias-five">
+<div class="bias-row-label">
+<b>5′ protocol</b><span>reads near the transcript start</span>
+</div>
+<div class="bias-track">
+<i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+</div>
+<div class="bias-row bias-three">
+<div class="bias-row-label">
+<b>3′ protocol</b><span>reads near the poly(A) end</span>
+</div>
+<div class="bias-track">
+<i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+</div>
+</div>
+<div class="bias-consequence">
+<b>Coverage consequence</b><span>A gene may be detected while an internal mutation or exon receives no reads.</span>
+</div>
+<div class="source">
+<p>Paper, Fig. 3d and Limitations · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10068894/">Nam et al.&nbsp;2023</a></p>
+</div>
+</section>
+<section>
+<section id="xiaochens-part" class="title-slide slide level1 center" data-background-color="#12324d">
+<h1>Xiaochen’s part</h1>
+
+</section>
+<section id="whats-new" class="slide level2">
+<h2>What’s new?</h2>
 <ul>
-<li>Sequence search at <strong>single-cell resolution</strong> across a large public index</li>
-<li>Index design for low-memory queries and incremental updates</li>
+<li>Sequence search at <strong>single-cell resolution</strong> across a large public index (searchable structure)</li>
+<li>Low-memory queries and incremental updates (new indexed datasets can be sequentially added)</li>
 <li>Cell-by-sequence analysis beyond targeted searches</li>
 </ul>
-<div class="slide-aside">
-<p>Combined contribution: scalable retrieval · linked cell metadata · sequence-derived cell features</p>
-</div>
+<p>Engineering tour de force: using conventional approaches we can probably do single-cell seq search on one dataset, not at this scale.</p>
 <div class="source">
 <p>Paper, Introduction, Figs. 1–2 and Fig. 5</p>
 </div>
 </section>
-<section id="how-to-read-a-positive-result" class="slide level2">
-<h2>How to read a positive result</h2>
-<div class="columns threecol">
+<section id="glossary-allele-genotype-and-wild-type" class="slide level2">
+<h2>Glossary: allele, genotype and wild type</h2>
+<div class="allele-sequences">
+<div class="allele-card reference-allele">
+<p><strong>Reference allele: G</strong></p>
+<div class="allele-sequence">
+…CATGAGCC<span>G</span>CTTGG…
+</div>
+<p>The base present in the selected reference sequence</p>
+</div>
+<div class="allele-card alternative-allele">
+<p><strong>Alternative allele: A</strong></p>
+<div class="allele-sequence">
+…CATGAGCC<span>A</span>CTTGG…
+</div>
+<p>Another sequence observed at the same location</p>
+</div>
+</div>
+<div class="genotype-panel">
+<span class="genotype-label">Possible diploid genotypes</span>
+<div class="genotype-row">
+<span><b>G</b> | <b>G</b><small>homozygous reference</small></span><span><b>G</b> | <em>A</em><small>heterozygous</small></span><span><em>A</em> | <em>A</em><small>homozygous alternative</small></span>
+</div>
+</div>
+<div class="columns allele-definitions">
 <div class="column" style="width:32%;">
-<p><strong>Probe</strong></p>
-<p>What sequence was searched?</p>
+<p><strong>Allele</strong></p>
+<p>One sequence version at a genomic location</p>
 </div><div class="column" style="width:32%;">
-<p><strong>Observability</strong></p>
-<p>Was that locus sampled?</p>
+<p><strong>Genotype</strong></p>
+<p>The two alleles carried by one individual</p>
 </div><div class="column" style="width:32%;">
-<p><strong>Context</strong></p>
-<p>Which cell, donor, tissue and assay?</p>
+<p><strong>Wild type</strong></p>
+<p>A context-dependent functional or conventional baseline</p>
 </div></div>
 <ul>
-<li>A hit: evidence for the queried RNA sequence</li>
-<li>No hit: may reflect limited expression or coverage</li>
-<li>Compare positive cells with a suitable denominator</li>
+<li>The reference allele <span class="math inline">\(\not=\)</span> wild type</li>
+<li>If most individuals carry A at a position (or A corresponds to normal function), researchers may define T as the wild-type allele.</li>
+<li>Example: sickle-cell; wild type: GAG → glutamate, mutant: GTG → valine</li>
 </ul>
 <div class="source">
-<p>Paper, Results and Limitations</p>
+<p><i>DNMT3A</i> c.2645G&gt;A: <a href="https://www.ncbi.nlm.nih.gov/clinvar/variation/375881/">ClinVar</a> · Definitions: <a href="https://www.genome.gov/genetics-glossary/Allele">NHGRI Allele</a></p>
 </div>
 </section>
-<section id="germline-variation" class="slide level2">
-<h2>1 · Germline variation</h2>
-<div class="question small">
-<p>Can atlas RNA data recover known population variants?</p>
+<section id="glossary-variant-snv-and-snp" class="slide level2">
+<h2>Glossary: variant, SNV and SNP</h2>
+<div class="variant-flow">
+<div class="variant-card">
+<span class="variant-label">Variant</span>
+<div class="variant-pair">
+<span>reference&nbsp; …C<b>G</b>T…</span><span>observed&nbsp; …C<em>A</em>T…</span>
 </div>
+<p><span class="variant-caption">Any sequence difference</span></p>
+</div>
+<p><span class="variant-arrow">›</span></p>
+<div class="variant-card snv-card">
+<span class="variant-label">SNV</span>
+<div class="base-change">
+<b>G</b><span>→</span><em>A</em>
+</div>
+<p><span class="variant-caption">A single-nucleotide variant changes one base</span></p>
+</div>
+<p><span class="variant-arrow">›</span></p>
+<div class="variant-card snp-card">
+<span class="variant-label">SNP</span>
+<div class="population-dots">
+<i></i><i></i><i class="alt"></i><i></i><i></i><i></i><i></i><i class="alt"></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="alt"></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+<p><span class="variant-caption">An SNV present in ≥1% of a population</span></p>
+</div>
+</div>
+<div class="columns variant-definitions">
+<div class="column" style="width:48%;">
+<p><strong>Molecular description</strong></p>
+<p>SNV describes the size of the sequence difference.</p>
+</div><div class="column" style="width:48%;">
+<p><strong>Population description</strong></p>
+<p>SNP adds information about population frequency.</p>
+</div></div>
+<ul>
+<li>Every SNP is an SNV. A rare SNV is not a SNP under the conventional 1% threshold.</li>
+<li>1% is just a convention; it may be different in differnet studies.</li>
+</ul>
+<div class="source">
+<p><a href="https://www.genome.gov/about-genomics/educational-resources/fact-sheets/human-genomic-variation">NHGRI Human Genomic Variation</a></p>
+</div>
+</section>
+<section id="glossary-germline-somatic-and-clonal" class="slide level2">
+<h2>Glossary: germline, somatic and clonal</h2>
+<div class="origin-grid">
+<div class="origin-card germline-card">
+<p><strong>Germline variant</strong></p>
+<div class="cell-grid all-variant">
+<i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+<p>Present from conception and potentially throughout the body</p>
+<p><small>Can be inherited</small></p>
+</div>
+<div class="origin-card somatic-card">
+<p><strong>Somatic variant</strong></p>
+<div class="cell-grid one-variant">
+<i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+<p>Arises after conception in one cell</p>
+<p><small>Restricted to that cell and its descendants</small></p>
+</div>
+<div class="origin-card clonal-card">
+<p><strong>Clonal somatic variant</strong></p>
+<div class="cell-grid clone-variant">
+<i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+<p>Variant descendants expand into a cell population</p>
+<p><small>Example: clonal haematopoiesis</small></p>
+</div>
+</div>
+<div class="cell-legend">
+<span><i></i>cell without the variant</span><span><i class="variant-cell"></i>cell carrying the variant</span>
+</div>
+<div class="case-link">
+<p><span><b>Paper case 1</b> Population germline variation</span><span><b>Paper case 3</b> Cancer somatic mutations</span></p>
+</div>
+<ul>
+<li>Either a germline or somatic change can be an SNV or SNP.</li>
+<li>Germline: BRCA1 variant (breast cancer risk).</li>
+<li>Somatic: DNMT3A mutation (stem cells proliferate faster).</li>
+<li>Clonal: clonal expansion of DNMT3A in blood (1 clone accounting for a large proportion of blood cells).</li>
+</ul>
+<div class="source">
+<p><a href="https://www.genome.gov/about-genomics/educational-resources/fact-sheets/human-genomic-variation">NHGRI Human Genomic Variation</a> · Clonal haematopoiesis: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10068894/">Nam et al.&nbsp;2023</a></p>
+</div>
+</section>
+<section id="case-study-germline-screening" class="slide level2">
+<h2>Case study: Germline screening</h2>
+<p>Can atlas RNA data recover known population variants?</p>
+<div class="columns variant-definitions">
+<div class="column" style="width:50%;">
 <ul>
 <li>296,985 common, coding, biallelic SNPs</li>
 <li>64-nucleotide allele-specific probes</li>
-<li>Healthy and disease samples; altered-sequence controls</li>
+<li>Healthy and disease samples; negative control sequence</li>
 </ul>
-<div class="source">
-<p>Paper, Fig. 3b and “Screening for germline variation”</p>
-</div>
-</section>
-<section id="germline-screening-result-and-boundary" class="slide level2">
-<h2>Germline screening · result and boundary</h2>
-<div class="columns figure-split germline">
-<div class="column" style="width:42%;">
-<div class="paper-figure">
-<p><img data-src="figs/fig3b.png" style="width:100.0%" alt="Observed alternative allele frequencies in healthy and disease samples track population frequencies; altered-sequence controls do not."></p>
-</div>
-</div><div class="column figure-notes" style="width:58%;">
-<p><span class="takeaway">Observed allele frequencies tracked population expectations in healthy and disease samples.</span></p>
-<p>The altered-sequence controls stayed near the background rate.</p>
-<div class="boundary-note">
-<p>A positive allele probe gives RNA sequence evidence. It does not resolve the donor genotype without coverage and allele-expression checks.</p>
-</div>
+</div><div class="column" style="width:50%;">
+<p><img data-src="figs/fig3b.png" style="width:50.0%" alt="Observed alternative allele frequencies in healthy and disease samples track population frequencies; altered-sequence controls do not."></p>
 </div></div>
 <div class="source">
 <p>León-Periñán et al., <em>Nature</em> 2026, Fig. 3b</p>
 </div>
 </section>
-<section id="isoform-usage" class="slide level2">
-<h2>2 · Isoform usage</h2>
+<section id="cancer-somatic-mutations" class="slide level2">
+<h2>Cancer somatic mutations</h2>
+<div class="question small">
+<p>Can known tumour mutations be found in single-cell RNA?</p>
+</div>
+<ul>
+<li>Allele-specific probes for expressed SNVs</li>
+<li>Comparison with scTML mutation calls</li>
+<li>280 tumour samples across 16 cancer types</li>
+</ul>
+<div class="source">
+<p>Paper, Fig. 4 and “Querying cancer somatic mutations at scale”</p>
+</div>
+</section>
+<section id="somatic-mutations-what-was-shown" class="slide level2">
+<h2>Somatic mutations · what was shown</h2>
+<div class="paper-figure full-width">
+<p><img data-src="figs/fig4.png" style="width:100.0%" alt="Pan-cancer mutation detection specificity and sensitivity, detection by mutation frequency, and sensitivity by mutation type."></p>
+</div>
+<div class="result-line">
+<p><strong>Across cancer types:</strong> high specificity and mean sensitivity around 0.94. Splice-proximal variants were harder to recover.</p>
+</div>
+<div class="boundary-note compact-note">
+<p>This benchmark tests retrieval of supplied mutations. Clone inference needs multiple informative loci and independent checks.</p>
+</div>
+<div class="source">
+<p>León-Periñán et al., <em>Nature</em> 2026, Fig. 4a–c</p>
+</div>
+</section>
+<section id="glossary-transcript-splice-junction-and-isoform" class="slide level2">
+<h2>Glossary: transcript, splice junction and isoform</h2>
+<div class="gene-model-panel">
+<span class="model-label">Gene</span>
+<div class="gene-model">
+<span class="exon exon-one">exon 1</span><i></i><span class="exon exon-a">exon A</span><i></i><span class="exon exon-three">exon 3</span>
+</div>
+<div class="intron-labels">
+<span>intron</span><span>intron</span>
+</div>
+<p><span class="splicing-arrow">splicing ↓</span></p>
+</div>
+<div class="isoform-grid">
+<div class="isoform-card include-exon">
+<p><strong>Isoform 1 · exon A included</strong></p>
+<div class="transcript-model">
+<span>exon 1</span><b></b><span class="highlight-exon">exon A</span><b></b><span>exon 3</span>
+</div>
+<p>Junctions: exon 1–A and exon A–3</p>
+</div>
+<div class="isoform-card skip-exon">
+<p><strong>Isoform 2 · exon A skipped</strong></p>
+<div class="transcript-model">
+<span>exon 1</span><b class="long-junction"></b><span>exon 3</span>
+</div>
+<p>Junction: exon 1–3</p>
+</div>
+</div>
+<div class="columns transcript-definitions">
+<div class="column" style="width:32%;">
+<p><strong>Transcript</strong></p>
+<p>An RNA molecule produced from a gene</p>
+</div><div class="column" style="width:32%;">
+<p><strong>Splice junction</strong></p>
+<p>The sequence spanning two joined exon edges</p>
+</div><div class="column" style="width:32%;">
+<p><strong>Isoform</strong></p>
+<p>One transcript structure produced from a gene</p>
+</div></div>
+<ul>
+<li>Two cells can have the same gene count but express different transcript isoforms.</li>
+<li>Example: BCL2L1 gene has two isoforms
+<ul>
+<li>Bcl-xL help cancer cells survive by suppressing cell death</li>
+<li>Bcl-xS promotes cell death</li>
+</ul></li>
+<li>Alternative splicing may be due to splicing factors (proteins), DNA variants.</li>
+</ul>
+<div class="source">
+<p><i>Ptprc</i> exon A example: paper, Fig. 4</p>
+</div>
+</section>
+<section id="case-study-isoform-usage" class="slide level2">
+<h2>Case study: Isoform usage</h2>
 <div class="flow compact">
 <div class="flowbox">
 <p><strong>Same gene</strong></p>
@@ -390,37 +555,8 @@ Jiadong Mao &amp; Xiaochen Zhang
 <p>León-Periñán et al., <em>Nature</em> 2026, Fig. 3d</p>
 </div>
 </section>
-<section id="cancer-somatic-mutations" class="slide level2">
-<h2>3 · Cancer somatic mutations</h2>
-<div class="question small">
-<p>Can known tumour mutations be found in single-cell RNA?</p>
-</div>
-<ul>
-<li>Allele-specific probes for expressed SNVs</li>
-<li>Comparison with scTML mutation calls</li>
-<li>280 tumour samples across 16 cancer types</li>
-</ul>
-<div class="source">
-<p>Paper, Fig. 4 and “Querying cancer somatic mutations at scale”</p>
-</div>
-</section>
-<section id="somatic-mutations-what-was-shown" class="slide level2">
-<h2>Somatic mutations · what was shown</h2>
-<div class="paper-figure full-width">
-<p><img data-src="figs/fig4.png" style="width:100.0%" alt="Pan-cancer mutation detection specificity and sensitivity, detection by mutation frequency, and sensitivity by mutation type."></p>
-</div>
-<div class="result-line">
-<p><strong>Across cancer types:</strong> high specificity and mean sensitivity around 0.94. Splice-proximal variants were harder to recover.</p>
-</div>
-<div class="boundary-note compact-note">
-<p>This benchmark tests retrieval of supplied mutations. Clone inference needs multiple informative loci and independent checks.</p>
-</div>
-<div class="source">
-<p>León-Periñán et al., <em>Nature</em> 2026, Fig. 4a–c</p>
-</div>
-</section>
-<section id="from-sequence-search-to-cell-comparison" class="slide level2">
-<h2>4 · From sequence search to cell comparison</h2>
+<section id="case-study-from-sequence-search-to-cell-comparison" class="slide level2">
+<h2>Case study: From sequence search to cell comparison</h2>
 <div class="columns figure-split representation">
 <div class="column" style="width:53%;">
 <div class="paper-figure">
@@ -483,60 +619,7 @@ Jiadong Mao &amp; Xiaochen Zhang
 <li><strong>Coverage:</strong> signal along a transcript or region</li>
 <li><strong>Cell representation:</strong> buckets → clustering and markers</li>
 </ul>
-<div class="slide-aside">
-<p>Next: three demonstrations · verified inputs · saved outputs</p>
-</div>
-<div class="source">
-<p><a href="https://github.com/malva-bio/malva_client">Malva client</a> · <a href="https://malva.readthedocs.io/en/latest/cmd_cellxmer.html">cellxmer documentation</a></p>
-</div>
-</section>
-<section id="demonstration-1-sequence-search" class="slide level2">
-<h2>Demonstration 1 · sequence search</h2>
-<ul>
-<li>Warm-up: search <strong>CD3D</strong> and inspect returned cell types</li>
-<li><em>DNMT3A</em> R882H: paired 47-base reference and mutant probes</li>
-<li>Compare RNA-positive cells within a selected sample</li>
-<li>Record query, index version, filters and denominator</li>
-</ul>
-<div class="demo-note">
-<p>Pending: Malva account access · live query · saved result</p>
-</div>
-<div class="source">
-<p><a href="https://github.com/malva-bio/malva_client">Client quick start</a></p>
-</div>
-</section>
-<section id="demonstration-2-transcript-usage" class="slide level2">
-<h2>Demonstration 2 · transcript usage</h2>
-<ul>
-<li>Select a verified <em>Ptprc</em> exon A probe</li>
-<li>Compare B cells with other immune cells</li>
-<li>Display coverage beside gene-level signal</li>
-<li>Check capture protocol and probe specificity</li>
-</ul>
-<div class="demo-note">
-<p>Pending: tested probe · selected sample · saved result</p>
-</div>
-<div class="source">
-<p>Paper, Fig. 3c · <a href="https://github.com/malva-bio/malva_client">Malva client</a></p>
-</div>
-</section>
-<section id="demonstration-3-cell-by-bucket-analysis" class="slide level2">
-<h2>Demonstration 3 · cell-by-bucket analysis</h2>
-<ul>
-<li>Choose a small, publicly available dataset</li>
-<li>Build cell-by-bucket matrix with <code>cellxmer</code></li>
-<li>Compare gene and bucket clustering</li>
-<li>Inspect one candidate marker sequence</li>
-</ul>
-<div class="demo-note">
-<p>Pending: precomputed index · clusters · marker assembly</p>
-</div>
-<div class="source">
-<p>Paper, Fig. 5 · <a href="https://malva.readthedocs.io/en/latest/cmd_cellxmer.html">cellxmer documentation</a></p>
-</div>
-</section>
-<section id="three-possible-research-uses" class="slide level2">
-<h2>Three possible research uses</h2>
+<p>Three possible extensions:</p>
 <div class="columns threecol">
 <div class="column" style="width:32%;">
 <p><strong>Data integration</strong></p>
@@ -551,31 +634,22 @@ Jiadong Mao &amp; Xiaochen Zhang
 <div class="source">
 <p>Discussion proposals; not applications validated in this paper</p>
 </div>
-</section>
-<section id="what-must-be-checked" class="slide level2">
-<h2>What must be checked?</h2>
-<ul>
-<li>Locus coverage, transcript expression and 3′ capture bias</li>
-<li>Sequencing errors, probe specificity and related sequences</li>
-<li>Donor, study, assay and cell-type effects</li>
-<li>Independent evidence for genotype or clone assignment</li>
-<li>Privacy implications of donor-linked variants</li>
-</ul>
 <div class="source">
-<p>Paper, Limitations and Supplementary Discussion</p>
+<p><a href="https://github.com/malva-bio/malva_client">Malva client</a> · <a href="https://malva.readthedocs.io/en/latest/cmd_cellxmer.html">cellxmer documentation</a></p>
 </div>
 </section>
-<section id="discussion" class="slide level2">
-<h2>Discussion</h2>
+<section id="limitations" class="slide level2">
+<h2>Limitations</h2>
+<p>scRNA-seq cannot cover</p>
 <ul>
-<li>Which sequence questions are difficult with our current data?</li>
-<li>Where would a sequence layer add information to gene counts?</li>
-<li>What evidence would make a mutation-defined clone convincing?</li>
-<li>Is an HCA clonal haematopoiesis survey feasible with RNA coverage?</li>
+<li>DNA that is not transcribed, such as most intergenic regions, promoters and enhancers;</li>
+<li>genes not expressed in the sampled cell;</li>
+<li>most introns in mature messenger RNA;</li>
+<li>lowly expressed transcripts, because sampling is sparse;</li>
+<li>positions far from the captured transcript end in 3′- or 5′-biased protocols;</li>
+<li>an allele that is not expressed.</li>
 </ul>
-<div class="source">
-<p>León-Periñán et al., <em>Nature</em> 2026</p>
-</div>
+<p>Example: DNMT3A R882H hard to capture using 3’ methods</p>
 </section>
 <section id="references" class="slide level2 appendix">
 <h2>References</h2>
@@ -584,12 +658,15 @@ Jiadong Mao &amp; Xiaochen Zhang
 <li><a href="https://github.com/malva-bio/malva_client">Malva client and examples</a></li>
 <li><a href="https://malva.readthedocs.io/en/latest/">Malva local tools documentation</a></li>
 </ul>
+</section></section>
+<section id="backup-slides" class="title-slide slide level1 center" data-background-color="#12324d">
+<h1>Backup slides</h1>
 
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>León-Periñán, Karaiskos &amp; Rajewsky · Nature 2026</p>
+
 </div>
 </div></div>
 
@@ -614,7 +691,7 @@ Jiadong Mao &amp; Xiaochen Zhang
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
-'controlsAuto': true,
+'controlsAuto': false,
 'previewLinksAuto': false,
 'pdfSeparateFragments': false,
 'autoAnimateEasing': "ease",
@@ -625,7 +702,7 @@ Jiadong Mao &amp; Xiaochen Zhang
 'smaller': false,
  
         // Display controls in the bottom right corner
-        controls: false,
+        controls: true,
 
         // Help the user learn the controls by providing hints, for example by
         // bouncing the down arrow when they first encounter a vertical slide
@@ -767,12 +844,12 @@ Jiadong Mao &amp; Xiaochen Zhang
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1600,
+        width: 1280,
 
-        height: 900,
+        height: 720,
 
         // Factor of the display size that should remain empty around the content
-        margin: 7.0e-2,
+        margin: 6.0e-2,
 
         math: {
           mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
