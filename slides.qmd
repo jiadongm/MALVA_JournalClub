@@ -1,12 +1,14 @@
 ---
-title: "Buy one get two: leveraging DNA level information from scRNA-seq"
+title: "Buy one get one free? Sequence-level information from single-cell RNA-seq"
 subtitle: "MIG Journal Club: MALVA for sequence pattern discovery from scRNA-seq"
 author: "Jiadong Mao & Xiaochen Zhang"
 date: "8 October 2026"
 format:
   revealjs:
     theme: simple
-    css: styles.css
+    css:
+      - styles.css
+      - reference.css
     auto-stretch: false
     fig-align: center
     slide-number: true
@@ -54,106 +56,103 @@ Sequence context: [Berenstein et al. 2015](https://pmc.ncbi.nlm.nih.gov/articles
 
 
 
-## What is lost in a gene-count matrix (Xiaochen part)?
+## Plan for today
 
-:::: {.flow}
-::: {.flowbox}
-**Sequencing reads**
+- Biological setup: what sequence differences can reveal
 
-[ACGT… · cell barcode]{.flow-subtitle}
-:::
-::: {.arrow}
-→
-:::
-::: {.flowbox}
-**Reference mapping**
+- Xiaochen: from RNA reads to counts and Malva sequence search
 
-[assign reads to genes]{.flow-subtitle}
-:::
-::: {.arrow}
-→
-:::
-::: {.flowbox}
-**Cell × gene counts**
+- Case studies: variants, isoforms and sequence-derived cell features
 
-[many sequences, one gene total]{.flow-subtitle}
-:::
+- Discussion
+
+
+
+
+## Human Genome Project: building the first reference
+
+::::: {.hgp-flow}
+:::: {.hgp-card .donor-card}
+<span class="hgp-label">Anonymous DNA donors</span>
+<div class="donor-visual">
+<div class="major-donor"><span>70%</span></div>
+<div class="minor-donor-group">
+<div class="minor-donors"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<span>30% from 19 others</span>
+</div>
+</div>
+<span class="hgp-caption">Most other donors had European ancestry</span>
 ::::
 
-- Gene counts: a useful summary of expression
-- Sequence differences: often absent from the summary
-- Malva: query the underlying RNA sequence evidence
+<span class="hgp-arrow">›</span>
 
-::: {.source}
-Paper, Introduction and Fig. 1
+:::: {.hgp-card .mosaic-card}
+<span class="hgp-label">Mosaic assembly</span>
+<div class="mosaic-bar"><i class="donor-a a1"></i><i class="donor-b"></i><i class="donor-a a2"></i><i class="donor-c"></i><i class="donor-a a3"></i><i class="donor-d"></i><i class="donor-e"></i></div>
+<span class="hgp-caption">One donor-derived sequence selected at each region</span>
+::::
+
+<span class="hgp-arrow">›</span>
+
+:::: {.hgp-card .coordinate-card}
+<span class="hgp-label">One shared reference path</span>
+<span class="coordinate-name"><i>DNMT3A</i> · c.2645</span>
+<div class="coordinate-sequence">…CATGAGCC<span>G</span>CTTGG…</div>
+<span class="hgp-caption">The selected reference base is G</span>
+::::
+:::::
+
+:::: {.columns .hgp-definitions}
+::: {.column width="55%"}
+**Reference sequence**
+
+The agreed sequence used to assign locations and compare observed DNA or RNA.
 :::
+::: {.column width="41%"}
+**Reference allele**
 
-## Glossary 1 · k-mers and probes
-
-::: {.sequence-demo}
-**Read:** `ACGTTACGAT`
-
-**4-mers:** `ACGT` `CGTT` `GTTA` `TTAC` `TACG` `ACGA` `CGAT`
+The base present on the selected reference path at one position.
 :::
-
-- **k-mer:** a sequence of *k* nucleotides
-- **Probe:** sequence submitted for search
-- **Index:** stored links between k-mers and their cells
+::::
 
 ::: {.slide-aside}
-Illustration: overlapping 4-mers · Malva index: sampled 24-mers by default · probe search: sliding windows
+The reference is a coordinate standard. It is not an average genome and does not preserve every donor’s variants.
 :::
 
 ::: {.source}
-Paper, Methods: Malva Index architecture; sequence querying
+[NHGRI Human Genome Project fact sheet](https://www.genome.gov/about-genomics/educational-resources/fact-sheets/human-genome-project) · [Genome Reference Consortium FAQ](https://www.ncbi.nlm.nih.gov/grc/help/faq/) · <i>DNMT3A</i> example: [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/variation/375881/)
 :::
 
-## Glossary 2 · interpretation
+## Sequence features we may want to find
 
-- **Reference / alternative allele:** two sequence forms at a variant site
-- **Splice junction:** sequence joining two exons
+- **Reference and alternative alleles:** sequence forms at a variant site
+- **Splice junction:** sequence that joins two exons
 - **Isoform:** one transcript form of a gene
-- **Pseudocount:** Malva's k-mer match total; not a UMI count
-- **Bucket:** group of related k-mers used as one cell feature
+- **Transcript end:** alternative 3′ UTR or polyadenylation site
+- **Unannotated sequence:** microbial, viral, vector or novel RNA sequence
+
+::: {.slide-aside}
+Gene totals can match even when the contributing RNA sequences differ.
+:::
 
 ::: {.source}
-Paper, Figs. 3–5 and Discussion
+Paper, Introduction and Figs. 3–5
 :::
 
-## Malva in one diagram
+## Xiaochen · from reads to sequence queries
 
-:::: {.flow}
-::: {.flowbox}
-**Public FASTQ files**
-
-[reads + cell barcodes]{.flow-subtitle}
-:::
-::: {.arrow}
-→
-:::
-::: {.flowbox}
-**Malva Index**
-
-[k-mer → cells]{.flow-subtitle}
-:::
-::: {.arrow}
-←
-:::
-::: {.flowbox}
-**Sequence query**
-
-[variant · junction · gene]{.flow-subtitle}
-:::
-::::
-::: {.resultbox}
-Matched cells + sample and cell metadata
+::: {.question .small}
+Technical section presented by Xiaochen Zhang
 :::
 
-- Index each dataset; merge indices as data arrive
-- Search across datasets without remapping reads
+- Standard RNA sequencing and reference alignment
+- Conversion of reads into a cell × gene count matrix
+- Sequence information hidden by gene totals
+- Malva's k-mer index and sequence-to-cell queries
+- Targeted searches, pseudocounts and bucket features
 
 ::: {.source}
-Paper, Fig. 1 and Methods
+Technical slides: <i>Malva_Xiaochen_part.pptx</i>
 :::
 
 ## What is new here?
