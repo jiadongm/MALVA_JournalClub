@@ -198,3 +198,9 @@
 .reveal .slides section.no-title-rule h2 {
   border-bottom: none;
 }
+
+/* Keep source notes inside the printable Reveal page. */
+@media print {
+  .reveal .slides .source { bottom: 50px !important; }
+  .reveal .slide-number, .slide-number-pdf { display: none !important; }
+}

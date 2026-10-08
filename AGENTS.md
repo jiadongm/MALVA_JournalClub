@@ -16,7 +16,7 @@ JD resumes with concepts and case studies after Xiaochen's section. Do not dupli
 
 ## Current deck structure
 
-The main deck has 23 Reveal slides, including the title slide and two section-divider slides.
+The main deck has 22 Reveal slides, including the title slide and Xiaochen's section divider. The published PDF inserts Xiaochen's 10 PowerPoint slides after that divider, for 32 pages in total.
 
 Before Xiaochen's section:
 
@@ -35,7 +35,7 @@ After Xiaochen's section:
 - Isoform cases.
 - Sequence-based cell clustering and marker sequences.
 - Research uses and limitations.
-- References and backup slides.
+- References.
 
 ## Current files and style
 
@@ -45,12 +45,14 @@ After Xiaochen's section:
 - `slides.html` and `slides_files/`: rendered presentation.
 - `figs/`: presentation figures and cropped paper panels.
 - `Malva_Xiaochen_part.pptx`: Xiaochen's technical slides for reference.
+- `malva-journal-club-2026-10-08.pdf`: the complete deck in meeting order.
+- `index.html`: a small landing page with view and download links for the PDF.
 
 The current style follows `/Users/jmao1/Library/CloudStorage/Dropbox/Slides/Slides - JD/MonashSpatialCoP_Oct2026`.
 
 The deck uses Source Sans Pro, a white background, navy headings, orange title rules, and blue or peach callouts. Section dividers use a navy background. The canvas is 1280 by 720 pixels.
 
-`quarto render slides.qmd` succeeds. A browser review found no slide-content overflow and no console errors across all 23 slides.
+`quarto render slides.qmd` succeeds. The 32-page combined PDF was rendered and inspected for clipped content and source notes.
 
 ## Working rule during detailed review
 
@@ -70,15 +72,15 @@ Answer conceptual questions in the chat. Do not change the slides unless the use
 - A negative control sequence is an artificial probe with another base altered. It estimates nonspecific or background matches.
 - The concept slide focuses on transcript ends and end-biased sequencing. Introduce unannotated sequences later through the KLK10 and bacterial ribosomal RNA results.
 
-## Known content-review items
+## Content-review items resolved for publication
 
-These items need a slide edit only when the user requests one:
+- The wild-type example now uses A consistently and states that wild type depends on study context.
+- The *Ptprc* exon A source note cites Figure 3c.
+- The germline slide defines its negative controls as probes with an extra altered base.
+- The cancer benchmark labels the probes as reference and alternative. It distinguishes RNA sequence evidence from DNA genotype.
+- The printed source notes remain inside the page, and the PDF states the figure licence.
 
-1. The allele and wild-type slide says that most individuals carry A, then defines T as wild type. This appears internally inconsistent and likely should define A as wild type.
-2. The Ptprc exon A source note cites Figure 4. The example is in Figure 3c.
-3. The germline case could define “negative control sequence” directly on the slide if the audience needs the term.
-
-Continue to check scientific wording, figure citations and examples during the slide-by-slide review.
+Continue to check scientific wording, figure citations and examples during any later slide revision.
 
 ## Deferred MALVA demonstration work
 
@@ -133,6 +135,4 @@ Primary references:
 
 ## Next steps
 
-Continue the slide-by-slide wording and scientific review. Apply edits only when the user explicitly requests them.
-
-After the content review, rehearse the timing and perform one final full-deck visual review.
+Maintain the source deck, PowerPoint and combined PDF together when slides change. Preserve the presentation order and verify the PDF after every re-export.

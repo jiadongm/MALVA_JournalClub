@@ -10,9 +10,15 @@ quarto render slides.qmd
 
 Open `slides.html`. The deck uses Quarto's bundled reveal.js resources and a local CSS file.
 
+## Complete slides
+
+The [32-page PDF](https://jiadongm.github.io/MALVA_JournalClub/malva-journal-club-2026-10-08.pdf) follows the meeting order: Jiadong's introduction, Xiaochen's technical explanation, then Jiadong's case studies and discussion. Xiaochen's 10-slide PowerPoint was exported without content edits. The PDF includes the complete presented material; the blank trailing print page was omitted.
+
+The PDF is served through GitHub Pages from this repository. `slides.qmd` and `Malva_Xiaochen_part.pptx` remain the editable sources.
+
 ## Status
 
-The reported examples are based on León-Periñán et al. (Nature, 2026), with cropped paper panels on the result slides. The three demonstration slides still describe planned workflows; no live-query result or plot is claimed yet. Before presenting, verify access to the Malva API, select and test exact probes and datasets, save outputs with the index version and filters, insert the verified demonstration outputs, and rehearse the deck.
+The reported examples are based on León-Periñán et al. (Nature, 2026), with cropped paper panels on the result slides. The current deck has no live demonstration or query result. The proposed clone analysis is an illustration, not a result from the paper or an executed Malva search.
 
 Paper: https://doi.org/10.1038/s41586-026-10975-w
 

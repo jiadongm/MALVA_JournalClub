@@ -39,20 +39,20 @@ CGTCTCCAACATGAGCC**A**CTTGGCGAG (mutated)
 :::
 
 
-This one-letter change alters amino accid 882 in DNMT3A protein (hence 'R882H'), frequently associated with acute myeloid leukaemia (AML).
+This one-letter change alters amino acid 882 in DNMT3A protein (hence 'R882H'), frequently associated with acute myeloid leukaemia (AML).
 
 
 ::: {.question .small}
 Which blood cells contain this changed sequence in their RNA?
 :::
 
-Conventional way: single-cell DNA-seq (expensive, no post-genetic states).
+Single-cell DNA sequencing measures genotype. RNA sequencing also measures transcriptional state.
 
 But we may also want to know:
 
 - Which blood-cell types show the mutation?
 - Do cells with the mutation form a distinct group, say transcriptionally?
-- Where are other changed gene sequences found (e.g. faster proliferation)?
+- Do sequence-positive cells show different proliferation programs?
 
 
 
@@ -114,7 +114,7 @@ Example: Human Genome Project; Sanger sequencing, reads of 500–1000 bps.
 
 
 - The reference is a coordinate standard. It is not an average genome and does not preserve every donor’s variants.
-- Short-read seq: since 2005, 50–300 bps.
+- Typical short sequencing reads: 50–300 bases.
 
 
 ::: {.source}
@@ -199,7 +199,7 @@ One sequence version at a genomic location
 ::: {.column width="32%"}
 **Genotype**
 
-The two alleles carried by one individual
+The alleles at a locus, usually two in a diploid cell
 :::
 ::: {.column width="32%"}
 **Wild type**
@@ -210,7 +210,7 @@ A context-dependent functional or conventional baseline
 
 
 - The reference allele $\not=$ wild type
-- If most individuals carry A at a position (or A corresponds to normal function), researchers may define T as the wild-type allele.
+- If A is the functional baseline in a study, researchers may call A the wild-type allele.
 - Example: sickle-cell; wild type: GAG → glutamate, mutant: GTG → valine
 
 ::: {.source}
@@ -270,7 +270,7 @@ SNP adds information about population frequency.
 
 
 - Every SNP is an SNV. A rare SNV is not a SNP under the conventional 1% threshold.
-- 1% is just a convention; it may be different in differnet studies. 
+- The 1% threshold is a convention and can vary between studies.
 
 
 ::: {.source}
@@ -317,13 +317,13 @@ Variant descendants expand into a cell population
 <div class="cell-legend"><span><i></i>cell without the variant</span><span><i class="variant-cell"></i>cell carrying the variant</span></div>
 
 ::: {.case-link}
-<span><b>Paper case 1</b> Population germline variation</span><span><b>Paper case 3</b> Cancer somatic mutations</span>
+<span><b>Germline screen</b> Population variation</span><span><b>Somatic benchmark</b> Cancer mutations</span>
 :::
 
 
-- Either a germline or somatic change can be an SNV or SNP.
+- SNV describes a one-base change; germline or somatic describes its origin.
 - Germline: BRCA1 variant (breast cancer risk).
-- Somatic: DNMT3A mutation (stem cells proliferate faster).
+- Somatic: some DNMT3A mutations give blood stem cells a growth advantage.
 - Clonal: clonal expansion of DNMT3A in blood (1 clone accounting for a large proportion of blood cells).
 
 
@@ -347,7 +347,8 @@ Can atlas RNA data recover known population variants?
 
 - 296,985 common, coding, biallelic SNPs
 - 64-nucleotide allele-specific probes
-- Healthy and disease samples; negative control sequence
+- Healthy and disease samples
+- Negative controls: probes with an extra altered base
 
 :::
 ::: {.column width="50%"}
@@ -377,7 +378,7 @@ León-Periñán et al., *Nature* 2026, Fig. 3b
 Can known tumour mutations be found in single-cell RNA?
 :::
 
-- Allele-specific probes (pairs of sequences, wild type + mut) for expressed SNVs
+- Allele-specific reference and alternative probes for expressed SNVs
 - Comparison with scTML mutation calls
 - 280 tumour samples across 16 cancer types
 
@@ -394,9 +395,9 @@ Paper, Fig. 4 and “Querying cancer somatic mutations at scale”
 :::
 
 
-- PAAD low sensitivity: mouse derived pancreatic cancer samples, mismatch with human derived probes
-- UTR3 (near transcript tail): mut may alter mRNA stability; more populous due to 3'-biased seq (scTML itself is RNA-based)
-- Exonic, splicing: see next page
+- PAAD outlier: mouse-derived samples were queried with human probes.
+- Splice-region variants had lower median sensitivity than 3′ UTR and exonic variants in this benchmark.
+- The comparison uses supplied RNA-based mutation calls; a sequence hit does not establish DNA genotype.
 
 ::: {.source}
 León-Periñán et al., *Nature* 2026, Fig. 4a–c
@@ -454,13 +455,13 @@ One transcript structure produced from a gene
 
 
 - Two cells can have the same gene count but express different transcript isoforms.
-- Example: BCL2L1 gene has two isoforms
-    - Bcl-xL help cancer cells survive by suppressing cell death
+- Two BCL2L1 splice forms illustrate this:
+    - Bcl-xL suppresses cell death
     - Bcl-xS promotes cell death
 - Alternative splicing may be due to splicing factors (proteins), DNA variants.
 
 ::: {.source}
-<i>Ptprc</i> exon A example: paper, Fig. 4
+<i>Ptprc</i> exon A example: paper, Fig. 3c
 :::
 
 
@@ -586,7 +587,7 @@ León-Periñán et al., *Nature* 2026, Fig. 3d
 :::
 ::::
 :::: {.column .figure-notes width="47%"}
-What we've seen are mostly about validation.
+Most examples so far validate known patterns.
 
 [The same reads can support a gene-count representation or a sequence-derived representation.]{.takeaway}
 
@@ -680,9 +681,9 @@ León-Periñán et al., *Nature* 2026, Fig. 5e,h
 
 **Possible uses**
 
-- Clonal haematopoiesis survey in HCA
+- Survey clonal haematopoiesis in Human Cell Atlas data
 - Sequence features alongside gene counts – buy one get one free?
-- Mutation-defined clones and subclones – how reliable it is
+- How reliably can RNA hits identify clones and subclones?
 
 :::
 ::: {.column width="58%"}
@@ -756,7 +757,7 @@ But do you want the free bubble tea?
 - [Malva client and examples](https://github.com/malva-bio/malva_client)
 - [Malva local tools documentation](https://malva.readthedocs.io/en/latest/)
 
-
+Paper figure panels reproduced or cropped from León-Periñán et al. under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Other credited material retains its original terms.
 
 
 
