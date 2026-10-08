@@ -342,7 +342,7 @@ Variant descendants expand into a cell population
 Can atlas RNA data recover known population variants?
 
 
-:::: {.columns .variant-definitions}
+:::: {.columns}
 ::: {.column width="50%"}
 
 - 296,985 common, coding, biallelic SNPs
@@ -352,7 +352,7 @@ Can atlas RNA data recover known population variants?
 :::
 ::: {.column width="50%"}
 
-![](figs/fig3b.png){fig-alt="Observed alternative allele frequencies in healthy and disease samples track population frequencies; altered-sequence controls do not." width="50%"}
+![](figs/fig3b.png){fig-alt="Observed alternative allele frequencies in healthy and disease samples track population frequencies; altered-sequence controls do not." width="60%"}
 
 :::
 ::::
@@ -371,13 +371,13 @@ León-Periñán et al., *Nature* 2026, Fig. 3b
 
 
 
-## Cancer somatic mutations
+## Case study: Cancer somatic mutations
 
 ::: {.question .small}
 Can known tumour mutations be found in single-cell RNA?
 :::
 
-- Allele-specific probes for expressed SNVs
+- Allele-specific probes (pairs of sequences, wild type + mut) for expressed SNVs
 - Comparison with scTML mutation calls
 - 280 tumour samples across 16 cancer types
 
@@ -385,18 +385,18 @@ Can known tumour mutations be found in single-cell RNA?
 Paper, Fig. 4 and “Querying cancer somatic mutations at scale”
 :::
 
-## Somatic mutations · what was shown
+
+
+
+## {.no-title-rule}
 ::: {.paper-figure .full-width}
 ![](figs/fig4.png){fig-alt="Pan-cancer mutation detection specificity and sensitivity, detection by mutation frequency, and sensitivity by mutation type." width="100%"}
 :::
 
-::: {.result-line}
-**Across cancer types:** high specificity and mean sensitivity around 0.94. Splice-proximal variants were harder to recover.
-:::
 
-::: {.boundary-note .compact-note}
-This benchmark tests retrieval of supplied mutations. Clone inference needs multiple informative loci and independent checks.
-:::
+- PAAD low sensitivity: mouse derived pancreatic cancer samples, mismatch with human derived probes
+- UTR3 (near transcript tail): mut may alter mRNA stability; more populous due to 3'-biased seq (scTML itself is RNA-based)
+- Exonic, splicing: see next page
 
 ::: {.source}
 León-Periñán et al., *Nature* 2026, Fig. 4a–c
@@ -518,7 +518,6 @@ One transcript structure produced from a gene
 
 - Probe a distinguishing exon, junction or 3′ UTR segment
 - Compare signal across cell types or spatial regions
-- Check assay coverage before interpretation
 
 ::: {.source}
 Paper, Fig. 3c–d
@@ -528,7 +527,9 @@ Paper, Fig. 3c–d
 
 
 
-## Example · *Ptprc* exon A
+
+
+## Example: *Ptprc* exon A
 ::::: {.columns .figure-split .wide-figure}
 :::: {.column width="70%"}
 ::: {.paper-figure}
@@ -539,10 +540,6 @@ Paper, Fig. 3c–d
 [B cells show stronger inclusion of exon A than the other immune populations.]{.takeaway}
 
 Gene totals conceal this exon-level contrast.
-
-::: {.boundary-note}
-Coverage supports exon usage. Full-length isoform assignment needs evidence across the transcript.
-:::
 ::::
 :::::
 
@@ -552,7 +549,7 @@ León-Periñán et al., *Nature* 2026, Fig. 3c
 
 
 
-## Example · *Add2* 3′ UTR
+## Example: *Add2* 3′ UTR
 ::::: {.columns .figure-split .add2}
 :::: {.column width="70%"}
 ::: {.paper-figure}
@@ -581,7 +578,7 @@ León-Periñán et al., *Nature* 2026, Fig. 3d
 
 
 
-## Case study: From sequence search to cell comparison
+## Case study: From sequence search to an assay
 ::::: {.columns .figure-split .representation}
 :::: {.column width="53%"}
 ::: {.paper-figure}
@@ -589,15 +586,22 @@ León-Periñán et al., *Nature* 2026, Fig. 3d
 :::
 ::::
 :::: {.column .figure-notes width="47%"}
+What we've seen are mostly about validation.
+
 [The same reads can support a gene-count representation or a sequence-derived representation.]{.takeaway}
 
-Malva groups related k-mers into buckets, then builds an embedding for neighbours and clusters.
+- Malva groups related k-mers into buckets, then builds an embedding for neighbours and clusters.
+- This opens up possibilities for **discovery**.
+
 ::::
 :::::
 
 ::: {.source}
 León-Periñán et al., *Nature* 2026, Fig. 5a; Methods: bucketing approach
 :::
+
+
+
 
 
 
@@ -620,9 +624,11 @@ León-Periñán et al., *Nature* 2026, Fig. 5a; Methods: bucketing approach
 ::::
 :::::
 
-::: {.boundary-note .compact-note}
-Shared structure recovers familiar populations. Divergent clusters need biological evidence before interpretation.
-:::
+
+- Clustering buckets vs clustering counts
+- Pancreas: disagreement; Oesophagus: agreement
+
+
 
 ::: {.source}
 León-Periñán et al., *Nature* 2026, Fig. 5b–c and Extended Data Fig. 10
@@ -664,38 +670,30 @@ León-Periñán et al., *Nature* 2026, Fig. 5e,h
 
 ## What can we do with the tool?
 
-- **Targeted search:** a sequence → matching cells and samples
-- **Coverage:** signal along a transcript or region
-- **Cell representation:** buckets → clustering and markers
+:::: {.columns}
+::: {.column width="42%"}
+**What MALVA returns**
 
+- Sequence → matching cells and samples
+- Coverage along a transcript or region
+- Sequence buckets → clusters and markers
 
-Three possible extensions:
+**Possible uses**
 
-:::: {.columns .threecol}
-::: {.column width="32%"}
-**Data integration**
+- Clonal haematopoiesis survey in HCA
+- Sequence features alongside gene counts – buy one get one free?
+- Mutation-defined clones and subclones – how reliable it is
 
-Sequence features alongside gene counts; improvement on a defined task
 :::
-::: {.column width="32%"}
-**Lineage tracing**
-
-Mutation panel; combined evidence across loci and cells
-:::
-::: {.column width="32%"}
-**HCA survey**
-
-Clonal haematopoiesis variants in suitable public samples
+::: {.column width="58%"}
+![](figs/clone-tree.svg){fig-alt="Hypothetical stem-cell lineage. A DNMT3A mutation marks clone A; a later TET2 mutation marks a nested subclone B. Both contain HSCs and mature blood cells." width="100%"}
 :::
 ::::
 
-::: {.source}
-Discussion proposals; not applications validated in this paper
-:::
 
 
 ::: {.source}
-[Malva client](https://github.com/malva-bio/malva_client) · [cellxmer documentation](https://malva.readthedocs.io/en/latest/cmd_cellxmer.html)
+Illustrative proposal, not a result of the paper · [Malva](https://www.nature.com/articles/s41586-026-10975-w) · [HSC lineage trees](https://www.nature.com/articles/s41586-022-04786-y)
 :::
 
 
@@ -735,6 +733,10 @@ scRNA-seq cannot cover
 
 Example: DNMT3A R882H hard to capture using 3' methods
 
+::: {style="text-align: center;"}
+But do you want the free bubble tea?
+:::
+
 
 
 
@@ -758,11 +760,5 @@ Example: DNMT3A R882H hard to capture using 3' methods
 
 
 
-
-
-
-
-
-# Backup slides {background-color="#12324d"}
 
 

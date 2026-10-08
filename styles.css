@@ -193,3 +193,8 @@
 .allele-definitions > .column,
 .variant-definitions > .column,
 .transcript-definitions > .column { border-top-color: #d98c2b; }
+
+
+.reveal .slides section.no-title-rule h2 {
+  border-bottom: none;
+}
